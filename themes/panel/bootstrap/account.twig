@@ -1,0 +1,105 @@
+{% include 'header.twig' %}
+
+<div class="panel-main togg">
+  
+<div class="container">
+      <div class="head-txt text-center mt-5 mb-5">
+        <h1>Hesap Ayarları</h1>
+        <img  class="mb-3" src="images/galaxy/ztiunwaw01s94gb9.png" />
+      </div>
+  <div class="row">
+    <div class="col-md-6">
+      {% if error %}
+        <div class="alert alert-dismissible alert-danger">
+          <button type="button" class="close" data-dismiss="alert">×</button>
+          {{ errorText }}
+        </div>
+      {% endif %}
+      {% if success %}
+        <div class="alert alert-dismissible alert-success">
+          <button type="button" class="close" data-dismiss="alert">×</button>
+          {{ successText }}
+        </div>
+      {% endif %}
+
+      <div class="well green mb-4">
+      <div class="head-txt text-center mt-2 mb-5">
+        <h1>Şifreni Değiştir</h1>
+        <img  class="mb-3" src="images/galaxy/ziz05chup1snsmmz.png" />
+      </div>        
+        <form method="post" action="account">
+          <div class="form-group">
+            <label for="current" class="control-label">{{ lang['account.password.current'] }}</label>
+            <input type="password" class="form-control" name="current_password">
+          </div>
+          <div class="form-group">
+            <label for="new" class="control-label">{{ lang['account.password.new'] }}</label>
+            <input type="password" class="form-control" name="password">
+          </div>
+          <div class="form-group">
+            <label for="confirm" class="control-label">{{ lang['account.password.confirm'] }}</label>
+            <input type="password" class="form-control" name="confirm_password">
+          </div>
+
+          <button type="submit" class="btn btn-green"><i class="fas fa-key"></i> Şifremi Değiştir</button>
+        </form>
+      </div>
+	  
+    </div>
+
+	<div class="col-md-6">
+	  
+
+        <div class="well blue mb-4">
+          <form method="post" action="account/change_lang">
+            <div class="form-group">
+              <label for="language" class="control-label">Dil</label>
+              <select class="form-control" name="lang">
+                  {% for language in site['languages'] %}
+                  <option {% if language["code"] == user["lang"] %} selected {% endif %} value="{{ language["code"] }}">{{ language["name"] }}</option>
+                  {% endfor %}
+              </select>
+            </div>
+            <button type="submit" class="btn btn-blue"><i class="fas fa-save"></i> Kaydet</button>
+          </form>
+        </div>
+  
+	  
+      <div class="well yellow mb-4">
+        <form method="post" action="account/timezone">
+          <div class="form-group">
+            <label for="timezone" class="control-label">Saat Dilimi</label>
+             <select class="form-control" name="timezone">
+                 {% for timezone in timezones %}
+                 <option {% if timezone["timezone"] == user['timezone'] %} selected {% endif %} value="{{ timezone["timezone"] }}">{{ timezone["label"] }}</option>
+                 {% endfor %}
+             </select>
+          </div>
+
+          <button type="submit" class="btn btn-yellow"><i class="fas fa-save"></i> Kaydet</button>
+        </form>
+      </div>
+
+	</div>
+	
+	<div class="col-md-12">
+
+      <div class="well red">
+        <form method="post" action="account/newapikey">
+          <div class="form-group">
+            <label for="key" class="control-label">API Key</label>
+            <input type="text" class="form-control" value="{{ user['apikey'] }}" readonly>
+          </div>
+
+          <button type="submit" class="btn btn-red"><i class="fas fa-sync-alt"></i> Yeni API Key</button>
+        </form>
+      </div>
+	
+	</div>
+	  
+  </div>
+</div>
+  
+</div>
+
+{% include 'footer.twig' %}

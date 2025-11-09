@@ -1,0 +1,201 @@
+{% include 'header.twig' %}
+
+{% if user['auth'] %}
+
+<div class="panel-main togg">
+
+<div class="container">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="head-txt text-center mt-5 mb-5">
+        <h1>Servis Listesi</h1>
+        <img  class="mb-3" src="images/galaxy/ztiunwaw01s94gb9.png" />
+      </div>
+      <div class="well red well-float">
+                     <div class="srv-search mb-3">
+                        <input type="text" name="q" id="serv-inp" class="srv-input services-filter" placeholder="Aradığınız servisi yazın..">
+                        <button type="submit" class="srv-submit">
+                        <i class="fas fa-search"></i>
+                        </button>
+                     </div>
+        
+                     <table id="serv-table" class="table services-table">
+                        <thead>
+                           <tr style="color: #fff">
+                              <th>{{ lang['services.id'] }}</th>
+                              <th class="width-service-name">{{ lang['services.name'] }}</th>
+                              <th class="nowrap text-center">{{ lang['services.price'] }}</th>
+                              <th class="nowrap text-center">{{ lang['services.min'] }}</th>
+                              <th class="nowrap text-center">{{ lang['services.max'] }}</th>
+							{% if avarageTime %}
+							  <th class="nowrap">{{ lang['services.avarage'] }}
+								<span class="fa fa-exclamation-circle" data-toggle="tooltip" data-placement="top" title="Ortalama süre, 1000 adet başına en son tamamlanan 10 siparişe dayanmaktadır."></span>
+							  </th>
+							{% endif %}
+                              <th class="nowrap text-center">{{ lang['neworder.description'] }}</th>
+                           </tr>
+                        </thead>
+                        <tbody>
+						  {% for category in serviceCategory %}
+                           <tr class="s-head">
+                              <td colspan="7">
+                                	<div class="services-title mk-icons mb-3">
+                                    	{{ category["category_name"] }}
+                                    </div>
+                              </td>
+                           </tr>
+                           {% for service in category['services'] %}
+                           <tr class="services-table-item">
+                              <td data-label="ID">{{ service["service_id"] }}</td>
+                              <td data-label="Hizmet" class="service-name mk-icons">{{ service["service_name"] }}</td>
+                              <td class="text-center" data-label="1000 Adet"><strong>{{ service["service_price"] }} {{ site['currency'] }}</strong></td>
+                              <td class="text-center text-danger" data-label="Minimum">{{ service["service_min"] }}</td>
+                              <td class="text-center text-success" data-label="Maksimum">{{ service["service_max"] }}</td>
+                              {% if avarageTime %}
+                              <td data-label="Tamamlanma Süresi">{{ service["service_speed"] }}</td>
+                              {% endif %}
+                              <td class="text-center" data-label="Açıklama">
+                                 <a type="button" class="descbtn" data-toggle="modal" data-target="#service_desc-{{service['service_id']}}" style="color:#fff!important"><i class="fas fa-eye"></i></a>
+							<div class="modal fade" id="service_desc-{{ service['service_id'] }}">
+							  <div class="modal-dialog">
+								<div class="modal-content">
+
+								  <!-- Modal Header -->
+								  <div class="modal-header">
+									<h4 class="modal-title">{{ service["service_name"] }}</h4>
+									<button type="button" class="close" data-dismiss="modal">×</button>
+								  </div>
+
+								  <!-- Modal body -->
+								  <div class="modal-body">
+									  <p>{{ service["service_description"] }}</p>
+								  </div>
+								</div>
+							  </div>
+							</div> 
+                              </td>
+                           </tr>
+                        {% endfor %}
+                        {% endfor %} 
+                        </tbody>
+                     </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+
+{% else %}
+
+      <div class="main-header">
+         <div class="main-header-bg">
+            <div class="mh-img"></div>
+         </div>
+         <div class="mh-content">
+<div class="container">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="head-txt text-center mt-5 mb-5">
+        <h1>Servis Listesi</h1>
+        <img  class="mb-3" src="https://cdn.mypanel.link/n3e4wz/ztiunwaw01s94gb9.png" />
+      </div>
+      <div class="well red well-float">
+                     <div class="srv-search mb-3">
+                        <input type="text" name="q" id="serv-inp" class="srv-input services-filter" placeholder="Aradığınız servisi yazın..">
+                        <button type="submit" class="srv-submit">
+                        <i class="fas fa-search"></i>
+                        </button>
+                     </div>
+        
+                     <table id="serv-table" class="table services-table">
+                        <thead>
+                           <tr style="color: #fff">
+                              <th>{{ lang['services.id'] }}</th>
+                              <th class="width-service-name">{{ lang['services.name'] }}</th>
+                              <th class="nowrap text-center">{{ lang['services.price'] }}</th>
+                              <th class="nowrap text-center">{{ lang['services.min'] }}</th>
+                              <th class="nowrap text-center">{{ lang['services.max'] }}</th>
+							{% if avarageTime %}
+							  <th class="nowrap">{{ lang['services.avarage'] }}
+								<span class="fa fa-exclamation-circle" data-toggle="tooltip" data-placement="top" title="Ortalama süre, 1000 adet başına en son tamamlanan 10 siparişe dayanmaktadır."></span>
+							  </th>
+							{% endif %}
+                              <th class="nowrap text-center">{{ lang['neworder.description'] }}</th>
+                           </tr>
+                        </thead>
+                        <tbody>
+						  {% for category in serviceCategory %}
+                           <tr class="s-head">
+                              <td colspan="7">
+                                	<div class="services-title mk-icons mb-3">
+                                    	{{ category["category_name"] }}
+                                    </div>
+                              </td>
+                           </tr>
+                           {% for service in category['services'] %}
+                           <tr class="services-table-item">
+                              <td data-label="ID">{{ service["service_id"] }}</td>
+                              <td data-label="Hizmet" class="service-name mk-icons">{{ service["service_name"] }}</td>
+                              <td class="text-center" data-label="1000 Adet"><strong>{{ service["service_price"] }} {{ site['currency'] }}</strong></td>
+                              <td class="text-center text-danger" data-label="Minimum">{{ service["service_min"] }}</td>
+                              <td class="text-center text-success" data-label="Maksimum">{{ service["service_max"] }}</td>
+                              {% if avarageTime %}
+                              <td data-label="Tamamlanma Süresi">{{ service["service_speed"] }}</td>
+                              {% endif %}
+                              <td class="text-center" data-label="Açıklama">
+                                 <a type="button" class="descbtn" data-toggle="modal" data-target="#service_desc-{{service['service_id']}}" style="color:#fff!important"><i class="fas fa-eye"></i></a>
+							<div class="modal fade" id="service_desc-{{ service['service_id'] }}">
+							  <div class="modal-dialog">
+								<div class="modal-content">
+
+								  <!-- Modal Header -->
+								  <div class="modal-header">
+									<h4 class="modal-title">{{ service["service_name"] }}</h4>
+									<button type="button" class="close" data-dismiss="modal">×</button>
+								  </div>
+
+								  <!-- Modal body -->
+								  <div class="modal-body">
+									  <p>{{ service["service_description"] }}</p>
+								  </div>
+								</div>
+							  </div>
+							</div> 
+                              </td>
+                           </tr>
+                        {% endfor %}
+                        {% endfor %} 
+                        </tbody>
+                     </table>
+      </div>
+    </div>
+  </div>
+</div>
+         </div>
+      </div>
+      <div class="footer">
+	  
+         <div class="container">
+            <div class="ft-content-bot">
+               <div class="ft-content-bot-text">
+                  <img src="{{ site['logo'] }}" alt="{{ site["site_name"] }}" title="{{ site["site_name"] }}" class="mb-3">
+                  <p>Copyright 2021 {{ site['site_name'] }} Tüm Hakları Saklıdır.</p>
+                  <a href="" target="_blank"><i class="fab fa-instagram"></i></a>
+				  <a href="" target="_blank"><i class="fab fa-facebook-f"></i></a>
+				  <a href="" target="_blank"><i class="fab fa-youtube"></i></a>
+				  <a href="" target="_blank"><i class="fab fa-whatsapp"></i></a>
+				  <a href="" target="_blank"><i class="fab fa-skype"></i></a>
+				  <br /><br />
+				  <a href="/signup">Kayıt Ol</a>|<a href="/services">Servis Listesi</a>|<a href="/terms">Kullanım Sözleşmesi</a>
+               </div>
+            </div>
+         </div>
+		 
+      </div>
+
+
+{% endif %} 
+
+{% include 'footer.twig' %}

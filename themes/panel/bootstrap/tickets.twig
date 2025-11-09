@@ -1,0 +1,127 @@
+{% include 'header.twig' %}
+
+<div class="panel-main togg">
+
+<div class="container">
+      <div class="head-txt text-center mt-5 mb-5">
+        <h1>Destek Merkezi</h1>
+        <img  class="mb-3" src="images/galaxy/ztiunwaw01s94gb9.png" />
+      </div>  
+  <div class="row"> 
+    <div class="col-md-6">
+      <div class="well green">
+      <div class="head-txt text-center mb-3">
+        <h1>Destek Talebi</h1>
+        <img  class="mb-3" src="https://cdn.mypanel.link/n3e4wz/ziz05chup1snsmmz.png" />
+      </div> 
+            {% if error %}
+            <div class="alert alert-dismissible alert-danger {% if site['rtl'] %} rtl-alert {% endif %}">
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                {{ errorText }}
+            </div>
+            {% elseif success %}
+            <div class="alert alert-dismissible alert-success {% if site['rtl'] %} rtl-alert {% endif %}">
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                {{ successText }}
+            </div>
+            {% endif %}
+
+            <div id="left-well">
+                <form class="p-30-notop" method="post" action="tickets" id="ticketsend">
+                    <div class="ticket-grubu">
+                        <label class="ticket-label">{{ lang['tickets.subject'] }}</label>
+                        <div class="select">
+                            <select class="form-control" id="Konu" name="subject" onchange="handleOrderType(this)">
+                                <option value="Sipariş" selected="">Sipariş</option>
+                                <option value="Ödeme">Ödeme</option>
+                                <option value="Diğer">Diğer</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="ticket-grubu" id="siparis-grubu">
+                        <label class="mt-3">Sipariş Numaranız</label>
+                        <input type="text" class="form-control" id="orderid" placeholder="Birden çok siparişiniz varsa virgül ile ayırın (Örn: 100,1001,3246)" />
+                        <label class="mt-3">Probleminizi Belirtin</label>
+                        <div class="select">
+                            <select class="form-control" id="istek">
+                                <option value="Gönderilen Miktar Düştü">Gönderilen Miktar Düştü</option>
+                                <option value="Siparişim Yükleniyorda Kaldı">Siparişim Yükleniyorda Kaldı</option>
+                                <option value="Siparişim Tamamlanmadı">Siparişim Tamamlanmadı</option>
+                                <option value="Siparişim Neden İptal Edildi?">Siparişim Neden İptal Edildi?</option>
+                                <option value="Diğer">Diğer</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="ticket-grubu" id="odeme-grubu" style="display: none;">
+                        <label class="mt-3">Probleminizi Belirtin</label>
+                        <div class="select">
+                            <select class="form-control" id="odeme">
+                                <option value="Nasıl Bakiye Yüklerim?" selected="">Nasıl Bakiye Yüklerim?</option>
+                                <option value="Bakiyem Onaylanmadı">Bakiyem Onaylanmadı</option>
+                                <option value="Bakiyem Yükleyemiyorum">Bakiyem Yükleyemiyorum</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="ticket-grubu">
+                        <label class="mt-3">{{ lang['tickets.message'] }}<span id="diger-grubu"></span></label>
+                        <textarea name="message" class="form-control mb-3" rows="4" cols="50" id="mesaj" placeholder="Size yardımcı olabilmemiz için açıklamanızı olabildiğince detaylandırın." style="height: 150px"></textarea>
+                      	<input type="hidden" id="tmessage" name="message">
+                    </div>
+                    <div class="ticket-grubu">
+                      <div id="alertArea" class="flash flash-hata mb-3" role="alert" style=""></div>
+                      <div id="successArea" class="flash flash-basarili mb-3" role="alert" style="">Desteğiniz bize ulaştı! En kısa sürede bilgilendirileceksiniz.</div>
+                        <button id="send-ticket" type="button" class="btn btn-blue btn-block"><span class="fa fa-paper-plane-o"></span>  Talep Oluştur</button>
+                    </div>
+                </form>
+
+      </div>
+	</div>	</div>
+    <div class="col-md-6">
+        <div class="well yellow">
+      <div class="head-txt text-center mb-3">
+        <h1>Destek Taleplerin</h1>
+        <img  class="mb-3" src="https://cdn.mypanel.link/n3e4wz/uxjs7wqi0qedyjkr.png" />
+      </div> 
+          <table class="table {% if site['rtl'] %} rtl-table {% endif %}">
+            <thead>
+            <tr>
+              <th>{{ lang['tickets.id'] }}</th>
+              <th>{{ lang['tickets.subject'] }}</th>
+              <th>{{ lang['tickets.status'] }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for ticket in ticketList %}
+              <tr>
+                <td>{{ ticket['ticket_id'] }}</td>
+                 <td>           {% if ticket["support_new"] == 2 %}
+                            <strong class="ticket-new">
+                                {% endif %}
+                                <a href="tickets/{{ ticket['ticket_id'] }}">{{ ticket['subject'] }}</a>
+                                {% if ticket["support_new"] == 2 %}
+                            </strong>
+                            {% endif %}</td>
+                <td><span title="{{ ticket['lastupdate_time'] }}">
+					{% if ticket['status'] == 'Yanıtlanmış' %}
+					<span style="color: #00b97d">Yanıtlandı</span>
+					{% endif %}               
+					{% if ticket['status'] == 'Beklemede' %}
+					<span style="color: #f9bf10">Bekliyor</span>
+					{% endif %}
+					{% if ticket['status'] == 'Kapalı' %}
+					<span style="color: #ff3651">Kapalı</span>
+					{% endif %}
+                </span></td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+  </div>
+</div>
+  
+ </div>
+ 
+ {% include 'footer.twig' %}

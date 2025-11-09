@@ -1,0 +1,238 @@
+{% include 'header.twig' %}
+         <div class="app-content">
+            <!-- page-content -->
+            <div class="container-fluid">
+               <div class="row mt-4">
+                  <div class="col-lg-12">
+                     <section class="order-side">
+                        <div class="row">
+                           <div class="col-lg-6 col-12 mb-5 mb-lg-0">
+                              <div class="d-card dc-dblue">
+                                 <div class="d-card-body" id="dc-body">
+                <form method="post" action="tickets" id="ticketsend">
+                    <div class="form-group">
+                        <label class="ticket-label">{{ lang['tickets.subject'] }}</label>
+                        <div class="select">
+                            <select class="form-control" id="Konu" name="subject" onchange="handleOrderType(this)">
+                                <option value="Sipariş" selected="">Sipariş</option>
+                                <option value="Ödeme">Ödeme</option>
+                                <option value="Diğer">Diğer</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group" id="siparis-grubu">
+                        <label class="mt-3">Sipariş Numaranız</label>
+                        <input type="text" class="form-control" id="orderid" placeholder="Birden çok siparişiniz varsa virgül ile ayırın (Örn: 100,1001,3246)" />
+                        <label class="mt-3">Probleminizi Belirtin</label>
+                        <div class="select">
+                            <select class="form-control" id="istek">
+                                <option value="Gönderilen Miktar Düştü">Gönderilen Miktar Düştü</option>
+                                <option value="Siparişim Yükleniyorda Kaldı">Siparişim Yükleniyorda Kaldı</option>
+                                <option value="Siparişim Tamamlanmadı">Siparişim Tamamlanmadı</option>
+                                <option value="Siparişim Neden İptal Edildi?">Siparişim Neden İptal Edildi?</option>
+                                <option value="Diğer">Diğer</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group" id="odeme-grubu" style="display: none;">
+                        <label class="mt-3">Probleminizi Belirtin</label>
+                        <div class="select">
+                            <select class="form-control" id="odeme">
+                                <option value="Nasıl Bakiye Yüklerim?" selected="">Nasıl Bakiye Yüklerim?</option>
+                                <option value="Bakiyem Onaylanmadı">Bakiyem Onaylanmadı</option>
+                                <option value="Bakiyem Yükleyemiyorum">Bakiyem Yükleyemiyorum</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="mt-3">{{ lang['tickets.message'] }}<span id="diger-grubu"></span></label>
+                        <textarea name="message" class="form-control mb-3" rows="4" cols="50" id="mesaj" placeholder="Size yardımcı olabilmemiz için açıklamanızı olabildiğince detaylandırın."></textarea>
+                      	<input type="hidden" id="tmessage" name="message">
+                    </div>
+                    <div class="form-group">
+                      <div id="alertArea" class="flash flash-hata mb-3" role="alert" style=""></div>
+                      <div id="successArea" class="flash flash-basarili mb-3" role="alert" style="">Desteğiniz bize ulaştı! En kısa sürede bilgilendirileceksiniz.</div>
+                        <button id="send-ticket" type="button" class="btn btn-primary btn-block btn-lg">{{ lang['tickets.button'] }}</button>
+                    </div>
+                </form>
+                                 </div>
+                              </div>
+                              <!-- d-card end -->
+                           </div>
+                           <!-- col item end-->
+                           <div class="col-lg-6 col-12 mb-5 mb-lg-0">
+                              <div class="d-card dc-dblue">
+                                 <ul class="nav nav-pills fastside">
+                                    <li class="nav-item col-6 mb-2" style="padding:0">
+                                       <a class="nav-link active" data-toggle="pill" href="#oldTickets" role="tab" aria-controls="pills-oldTickets" aria-selected="true">Önceki Taleplerim</a>
+                                    </li>
+                                    <li class="nav-item col-6 mb-2" style="padding:0">
+                                       <a class="nav-link second" data-toggle="pill" href="#sssTab" role="tab" aria-controls="pills-sssTab" aria-selected="false">Sık Sorulan Sorular</a>
+                                    </li>
+                                 </ul>
+                                 <div class="d-card-body" id="dc2-body" style="overflow-y: auto;max-height: 500px">
+                                    <div class="tab-content mt-3">
+                                       <div class="tab-pane fade active show" id="oldTickets" role="tabpanel" aria-labelledby="oldTickets">
+											<div class="table-responsive">
+											{% if ticketList %}
+												<table class="table">
+												  <thead>
+													<tr>
+													  <th>{{ lang['tickets.id'] }}</th>
+													  <th>{{ lang['tickets.subject'] }}</th>
+													  <th>{{ lang['tickets.status'] }}</th>
+													  <th>{{ lang['tickets.updated'] }}</th>
+													</tr>
+												  </thead>
+													<tbody>
+													{% for ticket in ticketList %}
+														<tr>
+															<td>{{ ticket['ticket_id'] }}</td>
+															  {% if ticket["support_new"] == 2 %}
+																<td><a href="tickets/{{ ticket['ticket_id'] }}"><strong>{{ ticket['subject'] }}</strong></a></td>
+															  {% else %}
+																<td><a href="tickets/{{ ticket['ticket_id'] }}">{{ ticket['subject'] }}</a></td>
+															  {% endif %}
+															<td>
+															{% if ticket['status'] == 'Yanıtlanmış' %}
+															<span style="color: #fff;background-color: #28a745;cursor:text;border-radius:5px; padding: 2px 5px;font-size: 12px">Yanıtlanmış</span>
+															{% endif %}               
+															{% if ticket['status'] == 'Beklemede' %}
+															<span style="color: #fff;background-color: #ffcc29;cursor:text;border-radius:5px; padding: 2px 5px;font-size: 12px">Beklemede</span>
+															{% endif %}
+															{% if ticket['status'] == 'Kapalı' %}
+															<span style="color: #fff;background-color: #ec4646;cursor:text;border-radius:5px; padding: 2px 5px;font-size: 12px">Kapalı</span>
+															{% endif %}
+															</td>
+														  <td><span class="nowrap">{{ ticket['lastupdate_time'] }}</span></td>
+														</tr>
+													{% endfor %}	
+													</tbody>
+												</table>
+												{% endif %}
+											</div>
+										</div>
+
+                                       <div class="tab-pane fade" id="sssTab" role="tabpanel" aria-labelledby="sssTab-tab">
+										<div class="faq-ss-tabs">
+										 <div class="home-ss-tab">
+											<div class="ss-tab-head">
+											   <div class="row">
+												  <div class="col">
+													 Sosyal Medya Boost Nedir?
+												  </div>
+												  <div class="col-auto align-self-center right-p">
+													 <i class="fas fa-plus"></i>
+													 <i class="fas fa-minus"></i>
+												  </div>
+											   </div>
+											</div>
+											<div class="ss-tab-content">
+											   Sosyal Medya Boost demek oluyor ki panelimizin dilimize uyarladığı terimiyle “Sanalizasyon”. Sanalizasyon; sosyal medya hesaplarının belirli bir kitleye sahip olduğunu varsayım olarak göstermek anlamına gelir. Varsayım (Sanalizasyon) olarak gösterilen profillerin görsel algı konusunu göze alarak, sosyal medya hesaplarının ulaşmak istedikleri hedeflere daha kolay ulaşabilmesi uygulamalarımızca her gün kanıtlanmaktadır
+											</div>
+										 </div>
+										 <!-- home-ss-tab end -->
+										 <div class="home-ss-tab">
+											<div class="ss-tab-head">
+											   <div class="row">
+												  <div class="col">
+													 Hesabım Risk Altında Mı?
+												  </div>
+												  <div class="col-auto align-self-center right-p">
+													 <i class="fas fa-plus"></i>
+													 <i class="fas fa-minus"></i>
+												  </div>
+											   </div>
+											</div>
+											<div class="ss-tab-content">
+											   Panelimiz üzerinden verilen siparişlerin sosyal medya hesaplarına olan etkisini an ve an kayıt ediyor ve gözlemliyoruz. Bilmenizi isteriz ki panelimiz uygulamaya girdiği tarihten itibaren, kullanıcılarımız tarafından kötüye kullanım olmadığı sürece hesaplarda herhangi bir risk gözlemlemedik. Fakat oluşacak herhangi bir problemden dolayı panelimizin hiçbir sorumluluğu almadığını bilmenizi isteriz. 
+											</div>
+										 </div>
+										 <!-- home-ss-tab end -->
+										 <div class="home-ss-tab">
+											<div class="ss-tab-head">
+											   <div class="row">
+												  <div class="col">
+													 Hesabıma Etkisi Nedir?
+												  </div>
+												  <div class="col-auto align-self-center right-p">
+													 <i class="fas fa-plus"></i>
+													 <i class="fas fa-minus"></i>
+												  </div>
+											   </div>
+											</div>
+											<div class="ss-tab-content">
+											   Panelimiz üzerinden vereceğiniz siparişlerde kontrollü ve düzenli bir şekilde ilerleme izlerseniz etkisini göreceğinizden emin olabilirsiniz. Birkaç örnek ile açıklamamız gerekirse; Instagram üzerinden paylaştığınız gönderiler “Keşfet” bölümüne çıkar. Bu, sizin gönderinizin daha fazla Instagram kullanıcısına ulaşmasınız sağlar. Bir diğer örnek, Youtube üzerinden paylaştığınız videolarda “Önerilenler” bölümünde sürekli gözükme olasılığınız artar. Bu, sizin video paylaşımınızın daha fazla Youtube kullanıcı tarafından görülmesine yardımcı olur.
+											</div>
+										 </div>
+										 <!-- home-ss-tab end -->
+										 <div class="home-ss-tab">
+											<div class="ss-tab-head">
+											   <div class="row">
+												  <div class="col">
+													 Destek Talebi Nasıl Oluşturulur?
+												  </div>
+												  <div class="col-auto align-self-center right-p">
+													 <i class="fas fa-plus"></i>
+													 <i class="fas fa-minus"></i>
+												  </div>
+											   </div>
+											</div>
+											<div class="ss-tab-content">
+											   Masaüstü bir bilgisayar ile giriş yapıyorsanız sol tarafta bulunan menüden “Destek Merkezi” simgesine tıklayın, eğer mobil ile giriş yapıyorsanız sağ üst tarafta bulunan menü butonuna tıklayın ardından “Destek Merkezi” yazan butona tıklayın. Açılan sayfada destek talebi oluşturmak istediğiniz konu seçimini yapın. Daha sonra gerekli alanları doldurarak “Destek Talebi Oluştur” butonuna tıklayın.
+											</div>
+										 </div>
+										 <!-- home-ss-tab end -->
+										 <div class="home-ss-tab">
+											<div class="ss-tab-head">
+											   <div class="row">
+												  <div class="col">
+													Nasıl Bakiye Yüklerim?
+												  </div>
+												  <div class="col-auto align-self-center right-p">
+													 <i class="fas fa-plus"></i>
+													 <i class="fas fa-minus"></i>
+												  </div>
+											   </div>
+											</div>
+											<div class="ss-tab-content">
+											   Panelimiz üzerinden kayıt işlemini başarılı bir şekilde gerçekleştirdikten sonra masaüstü bir bilgisayar ile giriş yapıyorsanız sol tarafta bulunan menüden “Bakiye Ekle” simgesine tıklayın, eğer mobil ile giriş yapıyorsanız sağ üst tarafta bulunan menü butonuna tıklayın ardından “Bakiye Ekle” yazan butona tıklayın. Bu sayfadan PayTR ile 7/24 olarak komisyonsuz ödeme yapabilirsiniz. Kart bilgileriniz hiçbir şekilde panelimiz alt yapısında bulunmamaktadır. PayTR ile yaptığınız ödemeler 3D secure sistemi ile korunmaktadır.
+											</div>
+										 </div>
+										 <!-- home-ss-tab end -->
+										 <div class="home-ss-tab">
+											<div class="ss-tab-head">
+											   <div class="row">
+												  <div class="col">
+													 Nasıl Sipariş Verebilirim?
+												  </div>
+												  <div class="col-auto align-self-center right-p">
+													 <i class="fas fa-plus"></i>
+													 <i class="fas fa-minus"></i>
+												  </div>
+											   </div>
+											</div>
+											<div class="ss-tab-content">
+											   Masaüstü bir bilgisayar ile giriş yapıyorsanız sol tarafta bulunan menüden “Yani Sipariş” simgesine tıklayın, eğer mobil ile giriş yapıyorsanız sağ üst tarafta bulunan menü butonuna tıklayın ardından “Yeni Sipariş” yazan butona tıklayın. Açılan sayfada “Kategoriler” kısmında panelimize ait tüm servisler yer almaktadır. Bu menüden sipariş vermek istediğiniz kategoriyi seçin. Daha sonra “Servis” menüsünden hangi servisten sipariş vermek istiyorsanız o servisi seçin. Seçtiğiniz serviste yazan fiyat 1000 adet fiyattır. “Servis Açıklaması” kısmını detaylı olarak okuduğunuza emin olduktan sonra “Link” yazan yere açıklamada belirtilen link türünü yazın. Daha sonra miktar bölümüne o servisten verebileceğiniz maksimum veya minimum değerler arasında bir miktar yazın. Bu işlemleri yaptıktan sonra “Sipariş Ver” butonuna tıklayın. Siparişiniz açıklama kısmında belirtilen süre içerisinde tamamlanacaktır.
+											</div>
+										 </div>
+										 <!-- home-ss-tab end -->
+									  </div>
+                                       </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </section>
+                  </div>
+                  <!-- page-content end -->
+               </div>
+               <!-- app-content -->
+            </div>
+         </div>
+
+      </div>
+
+{% include 'footer.twig' %}

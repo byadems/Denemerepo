@@ -1,0 +1,283 @@
+{% include 'header.twig' %}
+
+<style>
+.box img {margin: 15px auto}
+</style>
+<div class="panel-main togg">
+
+<div class="container">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="head-txt text-center mt-5 mb-5">
+        <h1>Bakiye Yükle</h1>
+        <img class="mb-3" src="images/galaxy/ztiunwaw01s94gb9.png">
+      </div>
+      
+
+
+			<div class="container">
+			  <div class="row">
+				  <div class="col-12 col-md-12">
+					<ul class="nav nav-pills row mb-5">
+					  <li class="nav-item col-md-6 mb-2">
+						<a class="nav-link funds-btn text-center active" data-toggle="pill" href="#kredikarti" role="tab" aria-controls="pills-kredikarti" aria-selected="true"><i class="far fa-credit-card fa-2x mb-3"></i><br>Online Ödeme</a>
+					  </li>
+					  <li class="nav-item col-md-6 mb-2">
+						<a class="nav-link funds-btn text-center" data-toggle="pill" href="#havale" role="tab" aria-controls="pills-havale" aria-selected="false"><i class="fas fa-university fa-2x mb-3"></i><br>Havale / EFT</a>
+					  </li>
+					</ul>
+					<div class="tab-content mt-3">
+
+					<div class="tab-pane fade" id="havale" role="tabpanel" aria-labelledby="havale">
+						<div class="row">
+							<div class="col-md-6">
+								<div class="well green well-float">
+
+								  <div class="centered-cover">
+									<div class="flex-break">
+									 <div class="form-group">
+									   <label for="sipbank" class="control-label">Lütfen Banka Seçiniz</label>
+									   <select class="form-control" id="banks">
+										   <option value="Paparaa" selected="">Papara</option>
+										   <option value="Enpara">Enpara-Finansbank</option>
+										   <option value="Garanti">Garanti Bankası</option>
+										   <option value="Isbank">İşBank</option>
+										   <option value="Kuveyt">Kuveyt Türk</option>
+										   <option value="Ziraat">Ziraat Bankası</option>
+									   </select>
+									 </div>
+								   <div class="box Paparaa" style="display: none;">
+									<img src="https://cdn.mypanel.link/n3e4wz/c1pbr7qcn71ygyyf.png" class="img-fluid">
+									<table class="table table-bordered table-banks">
+										<tbody>
+										  <tr class="api-list">
+											<td><span class="f-bg">Şube Kodu</span></td>
+											<td>-</td>
+										  </tr>
+										  <tr class="api-list">
+											<td><span class="f-bg">Hesap No</span></td>
+											<td>-</td>
+										  </tr>
+										  <tr class="api-list">
+											<td><span class="f-bg">Hesap Sahibi</span></td>
+											<td>-</td>
+										  </tr>
+										  <tr class="api-list">
+											<td><span class="f-bg">IBAN</span></td>
+											<td>-</td>
+										  </tr>
+										</tbody>
+									  </table>
+								   </div>
+								   <div class="box Enpara" style="display: none;">
+									<img src="https://cdn.mypanel.link/n3e4wz/0xtioc58dmsb0fq4.png" class="img-fluid">
+									<table class="table table-bordered table-banks">
+										<tbody>
+										  <tr class="api-list">
+											<td><span class="f-bg">Şube Kodu</span></td>
+											<td>-</td>
+										  </tr>
+										  <tr class="api-list">
+											<td><span class="f-bg">Hesap No</span></td>
+											<td>-</td>
+										  </tr>
+										  <tr class="api-list">
+											<td><span class="f-bg">Hesap Sahibi</span></td>
+											<td>-</td>
+										  </tr>
+										  <tr class="api-list">
+											<td><span class="f-bg">IBAN</span></td>
+											<td>-</td>
+										  </tr>
+										</tbody>
+									  </table>
+								   </div>
+								   <div class="box Garanti" style="display: none;">
+									<img src="https://cdn.mypanel.link/n3e4wz/jt4l2wxgn5l24q2b.png" class="img-fluid">
+									<table class="table table-bordered table-banks">
+										<tbody>
+										  <tr class="api-list">
+											<td><span class="f-bg">Şube Kodu</span></td>
+											<td>-</td>
+										  </tr>
+										  <tr class="api-list">
+											<td><span class="f-bg">Hesap No</span></td>
+											<td>-</td>
+										  </tr>
+										  <tr class="api-list">
+											<td><span class="f-bg">Hesap Sahibi</span></td>
+											<td>-</td>
+										  </tr>
+										  <tr class="api-list">
+											<td><span class="f-bg">IBAN</span></td>
+											<td>-</td>
+										  </tr>
+										</tbody>
+									  </table>
+								   </div>
+								   <div class="box Isbank" style="display: none;">
+									<img src="https://cdn.mypanel.link/n3e4wz/ukfwa4a7s4r9kg0d.png" class="img-fluid">
+									<table class="table table-bordered table-banks">
+										<tbody>
+										  <tr class="api-list">
+											<td><span class="f-bg">Şube Kodu</span></td>
+											<td>-</td>
+										  </tr>
+										  <tr class="api-list">
+											<td><span class="f-bg">Hesap No</span></td>
+											<td>-</td>
+										  </tr>
+										  <tr class="api-list">
+											<td><span class="f-bg">Hesap Sahibi</span></td>
+											<td>-</td>
+										  </tr>
+										  <tr class="api-list">
+											<td><span class="f-bg">IBAN</span></td>
+											<td>-</td>
+										  </tr>
+										</tbody>
+									  </table>
+								   </div>
+								 <div class="box Kuveyt" style="display: block;">
+									<img src="https://cdn.mypanel.link/n3e4wz/gihk4pk9d975dgop.png" class="img-fluid">
+									<table class="table table-bordered table-banks">
+										<tbody>
+										  <tr class="api-list">
+											<td><span class="f-bg">Şube Kodu</span></td>
+											<td>-</td>
+										  </tr>
+										  <tr class="api-list">
+											<td><span class="f-bg">Hesap No</span></td>
+											<td>-</td>
+										  </tr>
+										  <tr class="api-list">
+											<td><span class="f-bg">Hesap Sahibi</span></td>
+											<td>-</td>
+										  </tr>
+										  <tr class="api-list">
+											<td><span class="f-bg">IBAN</span></td>
+											<td>-</td>
+										  </tr>
+										</tbody>
+									  </table>
+								   </div>
+								 <div class="box Ziraat" style="display: none;">
+									<img src="https://cdn.mypanel.link/n3e4wz/d97scrul90k0npfc.png" class="img-fluid">
+									<table class="table table-bordered table-banks">
+										<tbody>
+										  <tr class="api-list">
+											<td><span class="f-bg">Şube Kodu</span></td>
+											<td>-</td>
+										  </tr>
+										  <tr class="api-list">
+											<td><span class="f-bg">Hesap No</span></td>
+											<td>-</td>
+										  </tr>
+										  <tr class="api-list">
+											<td><span class="f-bg">Hesap Sahibi</span></td>
+											<td>-</td>
+										  </tr>
+										  <tr class="api-list">
+											<td><span class="f-bg">IBAN</span></td>
+											<td>-</td>
+										  </tr>
+										</tbody>
+									  </table>
+								   </div>
+									 
+									
+									</div>
+								  </div>
+
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="well red well-float">
+									     <form method="post" action="addfunds">
+
+                  <div class="form-group">
+                    <label for="method" class="control-label">{{ lang['addfunds.bank'] }}</label>
+                    <select class="form-control" name="payment_bank">
+                     {% for bank in bankList %}
+                        <option value="{{ bank['id'] }}" {% if data['payment_bank'] == payment['id'] %} selected {% endif %} >{{ bank['bank_name'] }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+
+                    <div class="form-group ">
+                        <label for="method" class="control-label">{{ lang['addfunds.bank.amount'] }}</label>
+                        <input class="form-control" name="payment_bank_amount" value="{{ data['payment_bank_amount'] }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="method" class="control-label">{{ lang['addfunds.bank.sender'] }}</label>
+                        <input class="form-control" name="payment_gonderen" value="{{ data['payment_gonderen'] }}">
+                    </div>
+                      <button type="submit" class="btn btn-red">{{ lang['addfunds.bank.button'] }}</button>
+                 
+                                           <div class="clear"></div>
+
+                </form>
+									 
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="tab-pane fade active show" id="kredikarti" role="tabpanel" aria-labelledby="kredikarti">
+						<div class="well red well-float">
+                          
+                               {% if error %}
+          <div class="alert alert-dismissible alert-danger">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            {{ errorText }}
+          </div>
+        {% endif %}
+        {% if success %}
+          <div class="alert alert-dismissible alert-success">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            {{ successText }}
+          </div>
+        {% endif %}
+                          
+                          
+                                  {% if paymentsList %}
+  
+              <form method="post" action="addfunds">
+
+                <div class="form-group">
+                  <label for="method" class="control-label">{{ lang['addfunds.method'] }}</label>
+                  <select class="form-control" id="payment_method" name="payment_type">
+                   {% for payment in paymentsList %}
+                      <option value="{{ payment['id'] }}" {% if data['payment_type'] == payment['id'] %} selected {% endif %} >{{ payment['method_name'] }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+
+                  <div class="form-group">
+                      <label for="method" class="control-label">{{ lang['addfunds.amount'] }}</label>
+                      <input class="form-control" name="payment_amount" value="{{ data['payment_amount'] }}">
+                  </div>
+
+          	<button type="submit" class="btn btn-green"><i class="fas fa-plus"></i> Güvenli Ödeme Yap</button>
+              </form>
+  
+        {% endif %}
+                          
+												</div>		
+						
+												
+					</div>
+
+				  </div>        
+				</div>
+			  </div>
+			</div>        
+        
+
+	 </div>    
+  </div>    
+</div>
+  
+</div>
+
+{% include 'footer.twig' %}

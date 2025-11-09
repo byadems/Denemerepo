@@ -1,0 +1,83 @@
+{% include 'header.twig' %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2">
+
+      {% if errorText %}
+        <div class="alert alert-dismissible alert-danger">
+          <button type="button" class="close" data-dismiss="alert">×</button>
+          {{ errorText }}
+        </div>
+      {% endif %}
+      {% if successText %}
+        <div class="alert alert-dismissible alert-success">
+          <button type="button" class="close" data-dismiss="alert">×</button>
+          {{ successText }}
+        </div>
+      {% endif %}
+
+      <div class="well">
+        <form method="post" action="">
+         <div class="form-group">
+            <label for="username" class="control-label">{{ lang['signup.username'] }}</label>
+            <input type="text" class="form-control" name="username" pattern="[a-zA-Z0-9]{4,16}" title="Kullanıcı adınız, sadece harf ve sayılardan oluşacak şekilde en az 4, en fazla 16 karakterden oluşmalıdır." value="{{ data['username'] }}" required>
+         </div>  
+        {% if settings['name_secret'] == 2 %}
+          <div class="form-group">
+            <label for="username" class="control-label">{{ lang['signup.first_name'] }}</label>
+            <input type="text" class="form-control"  name="first_name" value="{{ data['first_name'] }}" required>
+          </div>
+          <div class="form-group">
+            <label for="username" class="control-label">{{ lang['signup.last_name'] }}</label>
+            <input type="text" class="form-control" name="last_name" value="{{ data['last_name'] }}" required>
+          </div>
+		{% endif %}
+          <div class="form-group">
+            <label for="username" class="control-label">{{ lang['signup.email'] }}</label>
+            <input type="email" class="form-control" name="email" value="{{ data['email'] }}" required>
+          </div>
+        {% if settings['skype_area'] == 2 %}
+          <div class="form-group">
+            <label for="username" class="control-label">{{ lang['signup.telephone'] }} (Örnek: +905510910577)</label>
+            <input type="tel" class="form-control" name="telephone" minlength="13" maxlength="13" pattern="^\+90[0-9]{10}$" title="Lütfen geçerli bir telefon numarası giriniz." value="{% if data['telephone'] %}{{ data['telephone'] }}{% else %}{% endif %}" required>
+          </div>
+		{% endif %}
+          <div class="form-group">
+            <label for="password" class="control-label">{{ lang['signup.password'] }}</label>
+            <input type="password" class="form-control" name="password" minlength="8" title="Şifreniz en az 8 karakter uzunluğunda olmalıdır." required>
+          </div>
+          <div class="form-group">
+            <label for="password" class="control-label" minlength="8">{{ lang['signup.confirm'] }}</label>
+            <input type="password" class="form-control" name="password_again" required>
+          </div>
+        {% if settings['terms_checkbox'] == 2 %}
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" name="terms" value="1">{{ lang['signup.accept_terms_text'] }}
+            </label>
+          </div>
+        {% endif %}
+
+          {% if settings['recaptcha'] == 2 %}
+           {% if captcha %}
+          <div class="form-group">
+             <div class="g-recaptcha" data-sitekey="{{ captchaKey }}"></div>
+          </div>
+            {% endif %}
+          {% endif %}
+
+            <button type="submit" class="btn btn-primary click">{{ lang['signup.button'] }}</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% for lang in site['languages'] %}
+  {% if lang['active'] %}
+    <script src="https://www.google.com/recaptcha/api.js?hl={{ lang['code'] }}"></script>
+  {% endif %}
+{% endfor %}
+
+{% include 'footer.twig' %}

@@ -1,0 +1,199 @@
+
+
+
+{% include 'header.twig' %}
+
+{% if user['auth'] %}
+         <div class="app-content">
+            <!-- page-content -->
+            <div class="container-fluid">
+               <div class="row mt-4">
+                  <div class="col-lg-12">
+                     <section class="order-side">
+                        <div class="row">
+                           <div class="col-lg-12 col-12 mb-5 mb-lg-0">
+                              
+							<nav>
+								<div class="nav tos-navs" id="nav-tab" role="tablist">
+								  <a class="nav-item nav-link active" id="nav-general-tab" data-toggle="tab" href="#nav-general" role="tab" aria-controls="nav-general" aria-selected="true">Maddeler</a>
+								  <a class="nav-item nav-link" id="nav-pp-tab" data-toggle="tab" href="#nav-pp" role="tab" aria-controls="nav-pp" aria-selected="false">Kurallar</a>
+								  <a class="nav-item nav-link" id="nav-rp-tab" data-toggle="tab" href="#nav-rp" role="tab" aria-controls="nav-rp" aria-selected="false">Kullanım Sözleşmesi</a>
+								</div>
+							</nav>
+							<div class="tab-content" id="nav-tabContent">
+								<div class="tab-pane fade show active" id="nav-general" role="tabpanel" aria-labelledby="nav-general-tab">
+									<div class="d-card">
+										<div class="d-card-body py-5">
+											<h2 class="mb-5">Maddeler</h2>
+											<div class="read-text">
+												<p><strong class="mr-1">Madde 1:</strong> Verdiğiniz sipariş devam ederken aynı linke bir sipariş daha girerseniz sistem hata verir ve bakiyeniz yanar.</p>
+												<p><strong class="mr-1">Madde 2:</strong> Profiliniz gizli konumundayken sipariş verirseniz sistem sipariş durumunu tamamlandı yapar ve işlem ücretini iade etmez!</p>
+												<p><strong class="mr-1">Madde 3:</strong> Eğer siparişinizin bir kısmı tamamlanır yada iptal edilirse (Madde 2 hariç) paranız iade edilir. Lütfen tekrar sipariş girmeyi yada farklı servisimizden sipariş geçmeyi deneyin.</p>
+												<p><strong class="mr-1">Madde 4:</strong> Bir sipariş bitmeden aynı adrese başka sipariş girmemelisiniz.</p>
+												<p><strong class="mr-1">Madde 5:</strong> Bot takipçi işlemlerinin hiç bir şekilde garantisi yoktur bakım yapılacak süre belli olmamakla birlikte gelen takipçiler ertesi gün bile silinebilir.</p>
+												<p><strong class="mr-1">Madde 6:</strong> Panelimiz hiçbir zaman süre garantisi vermez, sosyal mecraların ne zaman güncelleme yapacağı belli olmamakla birlikte servis açıklamalarında yazan süreler belirttiğimiz en yakın tahmini sürelerdir.</p>
+												<p><strong class="mr-1">Madde 7:</strong> +18, adult, iddaa kupon satış hesabı yada yasa dışı kumar vb hesaplara üye çekimi yasaktır.</p>
+												<p><strong class="mr-1">Madde 8:</strong> Sisteme giren bakiye kesinlikle iade edilmemektedir lakin bizimle bir hizmet konusunda anlaştığımızda o hizmet problem yaşayıp kaldırılırsa iade yapılmaktadır.</p>
+												<p><strong class="mr-1">Madde 9:</strong> Siparişinizi verdikten sonra hesap, gönderi vs. ID'lerini değiştirmeyin, gizlemeyin ve sipariş tamamlanmadan başka yerden çekim yapmayınız. İşlem hatalı sonuçlanır yada gönderim yapmadan tamamlandı sonucu verirse bizden yanıt gelene kadar başka yerlerden işlem girmeyiniz!</p>
+												<p><strong class="mr-1">Madde 10:</strong> Sistemimize kayıt olup sipariş vermiş olan herkes bu kuralları kabul etmiş olur ve herhangi bir aksaklıkta şikayetci olamaz ve hak talep edemezler.</p>
+												<p><strong class="mr-1">Madde 11:</strong> Servis açıklamalarında yazan veriler güncel olmamakla birlikte bu sözleşmede geçerli olmaktadır çünkü hiç bir servisin anlık olarak ne veriler yansıttığını bilemediğimiz için servis açıklamaları sadece ön bilgidir garanti ve başlangıç süreleri geçerli değildir.</p>
+											</div>
+										</div>
+									</div>
+								</div><!-- tab end -->
+								<div class="tab-pane fade" id="nav-pp" role="tabpanel" aria-labelledby="nav-pp-tab">
+									<div class="d-card">
+										<div class="d-card-body py-5">
+											<h2 class="mb-5">Kurallar</h2>
+											<div class="read-text">
+												<strong>Yapacağınız alışverişlerde aşağıdaki maddeleri kabul etmiş olursunuz.</strong>
+												<p class="mt-4">Sipariş geçilmeden önce mutlaka kullanıcının profil herkese açık hale getirilmelidir.</p>
+												<p>Sosyal medya sistemleri sürekli güncellenmektedir takipçi vb işlemlerde hesabınız kapatılabilir lütfen "Yeni Açılmış", "Telif İçerikli", "Sms ve Mail Onaysız" Hesaplara Takipçi Almayınız. Aynı zamanda sıradan bir hesabın kapanma riski de bulunmaktadır. Lütfen bunları göz önünde bulundurunuz sorumluluk kabul edememekteyiz.</p>
+												<p>Bir sipariş bitmeden aynı adrese başka sipariş girmemelisiniz.</p>
+												<p>Kapanan hesap,silinen takipçi, ve her türlü sipariş eksikliği konusunda panelimiz garanti vermemektedir.</p>
+												<p>Panelimiz bütün işlemlerde aktiflik & düşmeme garantilemez sadece alınan miktarın yüklemesinde sorumludur. (Garantili servisler hariç) Eğer eksik yükleme olursa sistem otomatik şekilde eksik kısmın ücretini iade etmektedir.</p>
+												<p>Bot takipçi işlemlerinin hiç bir şekilde garantisi yoktur bakım yapılacak süre belli olmamakla birlikte gelen takipçiler ertesi gün bile silinebilir.</p>
+												<p>Gizli hesaplara verilen siparişlerin durumu "Sipariş tamamlandı" olursa geri iade yapılamamaktadır.</p>
+												<p>Hatalı işlem yapılan siparişlerin durumu "Sipariş tamamlandı" olursa geri iade yapılamamaktadır.</p>
+												<p>Sistem üzerinden geçilen siparişlerin başlama süresi sistemsel yoğunluğa göre değişebilir, ertelenebilir, uzatılabilir.</p>
+												<p>Sisteme giren bakiye kesinlikle iade edilmemektedir lakin bizimle bir hizmet konusunda anlaştığımızda o hizmet problem yaşayıp kaldırılırsa iade yapılmaktadır.</p>
+												<p>Siparişinizi verdikten sonra hesap, gönderi vs. ID'lerini değiştirmeyin, gizlemeyin ve sipariş tamamlanmadan başka yerden çekim yapmayınız.</p>
+												<p><strong>Sistemimize kayıt olup sipariş vermiş olan herkes bu kuralları kabul etmiş olur ve herhangi bir aksaklıkta şikayetçi olamaz ve hak talep edemezler.</strong></p>
+											</div>
+										</div>
+									</div>
+								</div><!-- tab end -->
+								<div class="tab-pane fade" id="nav-rp" role="tabpanel" aria-labelledby="nav-rp-tab">
+									<div class="d-card">
+										<div class="d-card-body py-5">
+											<h2 class="mb-5">Kullanım Sözleşmesi</h2>
+											<div class="read-text">
+												<strong>https://fenomensen.net ve adı altında olan siteler ve uygulamalar üzerinde kayıt olunmadan ve alışveriş yapılmadan önce kullanıcıların okuması gereken önemli bilgilendirmeler aşağıda maddeler halinde yer almıştır.</strong>
+												<p class="mt-4">https://fenomensen.net ve adı altında olan siteler ve uygulamalar üzerinde kayıt olan ve yapılan alışverişlerde kullanıcılar bu maddeleri okumuş ve kabul etmiş sayılır. Lütfen bu maddeleri kabul etmeyecekseniz ve okumayacaksanız https://fenomensen.net ve adı altında olan siteler ve uygulamalara kayıt olmayınız ve hiçbir sözleşmeyi onaylamayınız.</p>
+												<p>Site kullanımı ile ilgili genel kurallar ve yasal sorumluluklar aşağıda belirtilen şartları, kurallar ve yasal sorumlulukları içeren Kullanıcı Sözleşmesi’nin https://fenomensen.net kullanılmadan önce okunması tavsiye edilir.</p>
+												<p>https://fenomensen.net kullanıcılarına siteye her girişte kullanıcı sözleşmesi sayfasını ziyaret etmelerini tavsiye etmektedir.</p>
+												<p>Kapanan hesap,silinen takipçi, ve her türlü sipariş eksikliği konusunda panelimiz garanti vermemektedir.</p>
+												<p>Panelimiz bütün işlemlerde aktiflik & düşmeme garantilemez sadece alınan miktarın yüklemesinde sorumludur. (Garantili servisler hariç) Eğer eksik yükleme olursa sistem otomatik şekilde eksik kısmın ücretini iade etmektedir.</p>
+												<p>Bot takipçi işlemlerinin hiç bir şekilde garantisi yoktur bakım yapılacak süre belli olmamakla birlikte gelen takipçiler ertesi gün bile silinebilir.</p>
+												<p>Gizli hesaplara verilen siparişlerin durumu "Sipariş tamamlandı" olursa geri iade yapılamamaktadır.</p>
+												<p>Hatalı işlem yapılan siparişlerin durumu "Sipariş tamamlandı" olursa geri iade yapılamamaktadır.</p>
+												<p>Sistem üzerinden geçilen siparişlerin başlama süresi sistemsel yoğunluğa göre değişebilir, ertelenebilir, uzatılabilir.</p>
+												<p>Sisteme giren bakiye kesinlikle iade edilmemektedir lakin bizimle bir hizmet konusunda anlaştığımızda o hizmet problem yaşayıp kaldırılırsa iade yapılmaktadır. "6502 sayılı Tüketicinin Korunması Hakkında Kanununda yer aldığı üzere orjinal ambalajı zarar görmüş, tahrip edilmiş, herhangi bir şekilde kullanımdan dolayı zarar görmüş ürünler ile tek kullanımlık ürünler, kopyalanabilir oyun, yazılım, teslimatı dijital ortamda yapılan ürünler ve programların iadesi kabul edilmemektedir.”</p>
+												<p>https://fenomensen.net ve uygulamalarına yüklenen her bakiye veya kredi ya da herhangi bir ödeme https://fenomensen.com ve uygulamaları tarafından geri ödeme yapılamaz, ancak https://fenomensen.net ve uygulamaları yöneticileri gerekli gördüğünde geri ödemelerini gerçekleştirmektedir.https://fenomensen.net ve uygulamalarına yüklenen bakiyeler veya https://fenomensen.com ve uygulamalarına yapılan ödemeler sadece ve sadece https://fenomensen.net ve uygulamalarında kullanılabilir.</p>
+												<p><strong>Sistemimize kayıt olup sipariş vermiş olan herkes bu kuralları kabul etmiş olur ve herhangi bir aksaklıkta şikayetçi olamaz ve hak talep edemezler.</strong></p>
+											</div>
+										</div>
+									</div>
+								</div><!-- tab end -->
+							</div>
+							  
+							  
+                           </div>
+                        </div>
+                        <!-- col item end-->
+                  </div>
+                  </section>
+               </div>
+               <!-- page-content end -->
+            </div>
+            <!-- app-content -->
+         </div>
+      </div>
+
+      </div>
+
+{% else %}
+    <div class="home-head outside">
+        <div class="home-head-bg"></div>
+	
+        <div class="home-head-content">
+            <div class="container" style="position: relative;">
+                <div class="row">
+                </div>
+            </div>
+        </div>
+    </div>
+	
+    <div class="hs-area mb-5">
+        <div class="container">
+
+                     <section class="order-side">
+                        <div class="row">
+                           <div class="col-lg-12 col-12 mb-5 mb-lg-0">
+                              
+							<nav>
+								<div class="nav tos-navs" id="nav-tab" role="tablist">
+								  <a class="nav-item nav-link active" id="nav-general-tab" data-toggle="tab" href="#nav-general" role="tab" aria-controls="nav-general" aria-selected="true">Maddeler</a>
+								  <a class="nav-item nav-link" id="nav-pp-tab" data-toggle="tab" href="#nav-pp" role="tab" aria-controls="nav-pp" aria-selected="false">Kurallar</a>
+								  <a class="nav-item nav-link" id="nav-rp-tab" data-toggle="tab" href="#nav-rp" role="tab" aria-controls="nav-rp" aria-selected="false">Kullanım Sözleşmesi</a>
+								</div>
+							</nav>
+							<div class="tab-content" id="nav-tabContent">
+								<div class="tab-pane fade show active" id="nav-general" role="tabpanel" aria-labelledby="nav-general-tab">
+									<div class="d-card">
+										<div class="d-card-body py-5">
+											<h2 class="mb-5">Maddeler</h2>
+											<div class="read-text">
+												<p><strong class="mr-1">Madde 1:</strong> Verdiğiniz sipariş devam ederken aynı linke bir sipariş daha girerseniz sistem hata verir ve bakiyeniz yanar.</p>
+												<p><strong class="mr-1">Madde 2:</strong> Profiliniz gizli konumundayken sipariş verirseniz sistem sipariş durumunu tamamlandı yapar ve işlem ücretini iade etmez!</p>
+												<p><strong class="mr-1">Madde 3:</strong> Eğer siparişinizin bir kısmı tamamlanır yada iptal edilirse (Madde 2 hariç) paranız iade edilir. Lütfen tekrar sipariş girmeyi yada farklı servisimizden sipariş geçmeyi deneyin.</p>
+												<p><strong class="mr-1">Madde 4:</strong> Bir sipariş bitmeden aynı adrese başka sipariş girmemelisiniz.</p>
+												<p><strong class="mr-1">Madde 5:</strong> Bot takipçi işlemlerinin hiç bir şekilde garantisi yoktur bakım yapılacak süre belli olmamakla birlikte gelen takipçiler ertesi gün bile silinebilir.</p>
+												<p><strong class="mr-1">Madde 6:</strong> Panelimiz hiçbir zaman süre garantisi vermez, sosyal mecraların ne zaman güncelleme yapacağı belli olmamakla birlikte servis açıklamalarında yazan süreler belirttiğimiz en yakın tahmini sürelerdir.</p>
+												<p><strong class="mr-1">Madde 7:</strong> +18, adult, iddaa kupon satış hesabı yada yasa dışı kumar vb hesaplara üye çekimi yasaktır.</p>
+												<p><strong class="mr-1">Madde 8:</strong> Sisteme giren bakiye kesinlikle iade edilmemektedir lakin bizimle bir hizmet konusunda anlaştığımızda o hizmet problem yaşayıp kaldırılırsa iade yapılmaktadır.</p>
+												<p><strong class="mr-1">Madde 9:</strong> Siparişinizi verdikten sonra hesap, gönderi vs. ID'lerini değiştirmeyin, gizlemeyin ve sipariş tamamlanmadan başka yerden çekim yapmayınız. İşlem hatalı sonuçlanır yada gönderim yapmadan tamamlandı sonucu verirse bizden yanıt gelene kadar başka yerlerden işlem girmeyiniz!</p>
+												<p><strong class="mr-1">Madde 10:</strong> Sistemimize kayıt olup sipariş vermiş olan herkes bu kuralları kabul etmiş olur ve herhangi bir aksaklıkta şikayetci olamaz ve hak talep edemezler.</p>
+												<p><strong class="mr-1">Madde 11:</strong> Servis açıklamalarında yazan veriler güncel olmamakla birlikte bu sözleşmede geçerli olmaktadır çünkü hiç bir servisin anlık olarak ne veriler yansıttığını bilemediğimiz için servis açıklamaları sadece ön bilgidir garanti ve başlangıç süreleri geçerli değildir.</p>
+											</div>
+										</div>
+									</div>
+								</div><!-- tab end -->
+								<div class="tab-pane fade" id="nav-pp" role="tabpanel" aria-labelledby="nav-pp-tab">
+									<div class="d-card">
+										<div class="d-card-body py-5">
+											<h2 class="mb-5">Kurallar</h2>
+											<div class="read-text">
+												<strong>Yapacağınız alışverişlerde aşağıdaki maddeleri kabul etmiş olursunuz.</strong>
+												<p class="mt-4">Sipariş geçilmeden önce mutlaka kullanıcının profil herkese açık hale getirilmelidir.</p>
+												<p>Sosyal medya sistemleri sürekli güncellenmektedir takipçi vb işlemlerde hesabınız kapatılabilir lütfen "Yeni Açılmış", "Telif İçerikli", "Sms ve Mail Onaysız" Hesaplara Takipçi Almayınız. Aynı zamanda sıradan bir hesabın kapanma riski de bulunmaktadır. Lütfen bunları göz önünde bulundurunuz sorumluluk kabul edememekteyiz.</p>
+												<p>Bir sipariş bitmeden aynı adrese başka sipariş girmemelisiniz.</p>
+												<p>Kapanan hesap,silinen takipçi, ve her türlü sipariş eksikliği konusunda panelimiz garanti vermemektedir.</p>
+												<p>Panelimiz bütün işlemlerde aktiflik & düşmeme garantilemez sadece alınan miktarın yüklemesinde sorumludur. (Garantili servisler hariç) Eğer eksik yükleme olursa sistem otomatik şekilde eksik kısmın ücretini iade etmektedir.</p>
+												<p>Bot takipçi işlemlerinin hiç bir şekilde garantisi yoktur bakım yapılacak süre belli olmamakla birlikte gelen takipçiler ertesi gün bile silinebilir.</p>
+												<p>Gizli hesaplara verilen siparişlerin durumu "Sipariş tamamlandı" olursa geri iade yapılamamaktadır.</p>
+												<p>Hatalı işlem yapılan siparişlerin durumu "Sipariş tamamlandı" olursa geri iade yapılamamaktadır.</p>
+												<p>Sistem üzerinden geçilen siparişlerin başlama süresi sistemsel yoğunluğa göre değişebilir, ertelenebilir, uzatılabilir.</p>
+												<p>Sisteme giren bakiye kesinlikle iade edilmemektedir lakin bizimle bir hizmet konusunda anlaştığımızda o hizmet problem yaşayıp kaldırılırsa iade yapılmaktadır.</p>
+												<p>Siparişinizi verdikten sonra hesap, gönderi vs. ID'lerini değiştirmeyin, gizlemeyin ve sipariş tamamlanmadan başka yerden çekim yapmayınız.</p>
+												<p><strong>Sistemimize kayıt olup sipariş vermiş olan herkes bu kuralları kabul etmiş olur ve herhangi bir aksaklıkta şikayetçi olamaz ve hak talep edemezler.</strong></p>
+											</div>
+										</div>
+									</div>
+								</div><!-- tab end -->
+								<div class="tab-pane fade" id="nav-rp" role="tabpanel" aria-labelledby="nav-rp-tab">
+									<div class="d-card">
+										<div class="d-card-body py-5">
+											<h2 class="mb-5">Kullanım Sözleşmesi</h2>
+											<div class="read-text">
+												
+												<p>3</p>
+											</div>
+										</div>
+									</div>
+								</div><!-- tab end -->
+							</div>
+							  
+							  
+                           </div>
+                        </div>
+                        <!-- col item end-->
+                  </div>
+                  </section>
+				  
+        </div>
+	 </div> 
+	
+{% endif %}
+
+{% include 'footer.twig' %}

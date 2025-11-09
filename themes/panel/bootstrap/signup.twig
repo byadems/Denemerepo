@@ -1,0 +1,113 @@
+ {% include 'header.twig' %}
+ <div class="main-header">
+         <div class="main-header-bg">
+            <div class="mh-img"></div>
+         </div>
+         <div class="mh-content">
+            <div class="container">
+               <div class="row">
+                  <div class="col-lg-6 col-12 d-none d-md-block">
+					<img src="images/galaxy/a3rew77p0te5ncuz.png" class="img-fluid mt-5" />
+					<h1 class="regBaslik mt-4">{{ site['site_name'] }}'a Kayıt Ol !</h1>
+					<span class="d-flex align-items-center mt-5 loginText">
+						<p>Zaten Üye misiniz?</p>
+						<a href="/"><button type="submit" class="btn btn-green btn-block ml-5"><i class="fal fa-sign-in"></i> Giriş Yap</button></a>
+					</span>
+                  </div>
+                  <div class="col-lg-5 offset-lg-1 col-12 mt-5 mt-lg-0">
+                     <div class="loginSide register">
+                        <h1 class="sWhite text-center">Kayıt Ol</h1>
+                        <form method="post" action="">
+						  {% if errorText %}
+							<div class="alert alert-dismissible alert-danger">
+							  <button type="button" class="close" data-dismiss="alert">×</button>
+							  {{ errorText }}
+							</div>
+						  {% endif %}
+						  {% if successText %}
+							<div class="alert alert-dismissible alert-success">
+							  <button type="button" class="close" data-dismiss="alert">×</button>
+							  {{ successText }}
+							</div>
+						  {% endif %}
+                           <div class="form-group formIcon">
+                              <i class="fal fa-user icon"></i>
+                              <input type="text" class="form-control" name="username" value="{{ data['username'] }}" placeholder="Kullanıcı Adınız">
+                           </div>
+						   {% if settings['name_secret'] == 2 %}
+                           <div class="form-group formIcon">
+                              <i class="fal fa-file-signature icon"></i>
+                              <input type="text" class="form-control" name="first_name" value="{{ data['first_name'] }}" placeholder="Adınız">
+                           </div>
+                           <div class="form-group formIcon">
+                              <i class="fal fa-file-signature icon"></i>
+                              <input type="text" class="form-control" name="last_name" value="{{ data['last_name'] }}" placeholder="Soyadınız">
+                           </div>	
+							{% endif %}	
+                           <div class="form-group formIcon">
+                              <i class="fal fa-envelope-open icon"></i>
+                              <input type="email" class="form-control" name="email" value="{{ data['email'] }}" placeholder="E-Posta Adresiniz">
+                           </div>	
+							{% if settings['skype_area'] == 2 %}
+                           <div class="form-group formIcon">
+                              <i class="fal fa-phone-volume icon"></i>
+                              <input type="text" class="form-control" name="telephone" value="{{ data['telephone'] }}" placeholder="Telefon Numaranız">
+                           </div>	
+						   {% endif %}
+                           <div class="form-group formIcon">
+                              <i class="fal fa-lock-alt icon"></i>
+                              <input type="password" class="form-control" name="password" placeholder="Şifreniz">
+                           </div>
+                           <div class="form-group formIcon">
+                              <i class="fal fa-lock-alt icon"></i>
+                              <input type="password" class="form-control" name="password_again" placeholder="Şifreniz Tekrar">
+                           </div>		
+							{% if settings['terms_checkbox'] == 2 %}
+							  <div class="checkbox">
+								<label>
+								  <input type="checkbox" name="terms" value="1">{{ lang['signup.accept_terms_text'] }}
+								</label>
+							  </div>
+							{% endif %}
+						  <div class="form-group">
+							 <div class="g-recaptcha" data-sitekey="{{ captchaKey }}"></div>
+						  </div>
+                           <div class="form-group mt-5">
+                              <button type="submit" class="btn btn-orange btn-block"><i class="fas fa-arrow-circle-right"></i> Kayıt Ol</button>
+                           </div>
+                        </form>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+
+ <div class="footer">
+	  
+         <div class="container">
+            <div class="ft-content-bot">
+               <div class="ft-content-bot-text">
+                  <img src="{{ site['logo'] }}" alt="{{ site["site_name"] }}" title="{{ site["site_name"] }}" class="mb-3">
+                  <p>Copyright 2021 {{ site['site_name'] }} Tüm Hakları Saklıdır.</p>
+                  <a href="" target="_blank"><i class="fab fa-instagram"></i></a>
+				  <a href="" target="_blank"><i class="fab fa-facebook-f"></i></a>
+				  <a href="" target="_blank"><i class="fab fa-youtube"></i></a>
+				  <a href="" target="_blank"><i class="fab fa-whatsapp"></i></a>
+				  <a href="" target="_blank"><i class="fab fa-skype"></i></a>
+				  <br /><br />
+				  <a href="/signup">Kayıt Ol</a>|<a href="/services">Servis Listesi</a>|<a href="/terms">Kullanım Sözleşmesi</a>
+               </div>
+            </div>
+         </div>
+		 
+      </div>
+
+	  
+{% for lang in site['languages'] %}
+  {% if lang['active'] %}
+    <script src="https://www.google.com/recaptcha/api.js?hl={{ lang['code'] }}"></script>
+  {% endif %}
+{% endfor %}	 
+
+{% include 'footer.twig' %} 

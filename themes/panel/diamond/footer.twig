@@ -1,0 +1,26 @@
+{{ footerCode }}
+
+{% for script in scriptList %}
+    <script type="text/javascript" src="{{ script }}"></script>
+{% endfor %}
+  <script type="text/javascript">
+    /*Abdul Custom Script*/
+    $("#menu-toggle").click(function(e) {
+    e.preventDefault();
+    $("#wrapper").toggleClass("toggled");
+    });
+    if ($(window).width() < 991) {
+    $('#wrapper').removeClass('toggled');
+    } else {
+    $('#wrapper').addClass('toggled');
+    }
+    $('.main-top p,.content p').readmore({
+    speed: 250,
+    lessLink: '<a href="#">Read less</a>'
+    });
+    /*Abdul Custom Script*/    
+  </script>
+  
+
+</body>
+</html>

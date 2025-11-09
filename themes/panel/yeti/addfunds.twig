@@ -1,0 +1,172 @@
+{% include 'header.twig' %}
+
+{% if paymentsList %}
+ <!-- app-header -->
+         <div class="app-content">
+            <!-- page-content -->
+            <div class="container-fluid">
+               <div class="row mt-4">
+                  <div class="col-lg-12">
+               <section class="order-side">
+                  <div class="row">
+                     <div class="col-lg-7 col-12 mb-5 mb-lg-0">
+                        <div class="d-card dc-dblue">
+                           <div class="d-card-body" id="dc-body">
+							  <form method="post" action="addfunds">
+								{% if error %}
+								  <div class="alert alert-dismissible alert-danger">
+									<button type="button" class="close" data-dismiss="alert">×</button>
+									{{ errorText }}
+								  </div>
+								{% endif %}
+								{% if success %}
+								  <div class="alert alert-dismissible alert-success">
+									<button type="button" class="close" data-dismiss="alert">×</button>
+									{{ successText }}
+								  </div>
+								{% endif %}
+                              <div class="form-group">
+                                 <label for="method" class="control-label">{{ lang['addfunds.method'] }}</label>
+								  <select class="form-control" id="payment_method" name="payment_type">
+								   {% for payment in paymentsList %}
+									  <option value="{{ payment['id'] }}" {% if data['payment_type'] == payment['id'] %} selected {% endif %} >{{ payment['method_name'] }}</option>
+									{% endfor %}
+								  </select>
+                              </div>
+                              <div class="form-group">
+							     <label for="amount" class="control-label">{{ lang['addfunds.amount'] }}</label>
+                                 <input class="form-control" name="payment_amount" value="{{ data['payment_amount'] }}">
+                              </div>
+
+                              <button type="submit" class="btn btn-primary btn-lg btn-block mb-4">Güvenli Ödeme Yap</button>
+                              <button type="button" class="btn btn-purple btn-lg btn-block" data-toggle="modal" data-target="#papara-modal"><img src="../img/papara.png" width="75"> ile Öde</button>
+                              </form>
+                           </div>
+                        </div>
+                        <!-- d-card end -->
+                     </div>
+                     <!-- col item end-->
+                     <div class="col-lg-5 col-12 mb-5 mb-lg-0">				 
+                        <div class="d-card dc-dblue">
+                           <ul class="nav nav-pills fastside">
+                              <li class="nav-item col-6 mb-2" style="padding:0">
+                                 <a class="nav-link active" data-toggle="pill" href="#payInfo" role="tab" aria-controls="pills-payInfo" aria-selected="true">Ödeme Bilgileri</a>
+                              </li>
+                              <li class="nav-item col-6 mb-2" style="padding:0">
+                                 <a class="nav-link second" data-toggle="pill" href="#payAll" role="tab" aria-controls="pills-payAll" aria-selected="false">Banka Hesapları</a>
+                              </li>
+                           </ul>
+                           <div class="d-card-body" id="dc2-body" style="overflow-y: auto; max-height: 500px">
+                              <div class="tab-content mt-3">
+                                 <div class="tab-pane fade active show" id="payInfo" role="tabpanel" aria-labelledby="payInfo">
+									<img src="../img/paytr.png" style="display: inline-block; width: 128px; max-width: 100%;" class="img-responsive">
+									<p class="my-3">Merhaba  <strong>{{ user['username'] }}</strong>,<br /> Öncelikle bilmeni isteriz ki tüm ödeme yöntemlerimizde %3 komisyon almaktayız. Minimum 10.00 TL bakiye yükleyerek işlemlerinizi yapmaya başlayabilirsiniz. Kredi kartı ve Havale/EFT ödemeleriniz, ödeme kanalımız olan BDDK lisanslı PayTR tarafından işlenecektir. Onay ve iade işlemleri PayTR tarafından gerçekleşecektir.</p>
+
+									<strong>PayTR Ödeme Hizmetleri A.Ş.</strong><br />
+									<strong>Telefon:</strong> +90 850 441 32 66<br />
+									<strong>İletişim:</strong> paytr.com/iletisim<br />
+                                 </div>
+                                 <div class="tab-pane fade" id="payAll" role="tabpanel" aria-labelledby="payAll-tab">
+									  <div class="table-responsive">
+										<table class="table table-striped table-bordered table-checkable ">
+										  <thead>
+											<tr>
+											  <th>Banka Adı</th>
+											  <th>Şube Kodu</th>
+											  <th>Hesap No</th>
+											  <th>IBAN</th>
+											  <th>Alıcı Adı</th>
+
+											</tr>
+										  </thead>
+										  <tbody>
+										  {% for bank in bankList %}
+											<tr>
+											  <td>{{ bank['bank_name'] }}</td>
+											  <td>{{ bank['bank_sube'] }}</td>
+											  <td>{{ bank['bank_hesap'] }}</td>
+											  <td><b>{{ bank['bank_iban'] }}</b><br></td>
+											  <td>{{ bank["bank_alici"] }}</td>
+											</tr>
+										  {% endfor %}
+											</tbody>
+										  </table>
+										</div>
+
+									  <div class="table-responsive">
+										<table class="table table-striped table-bordered table-checkable ">
+										  <tbody>
+											<tr>
+											  <td>
+												<b>BİLGİLENDİRME: </b> Ödeme yapılırken kesilen Havale/EFT ücretleri tarafımızca <b>karşılanmayacaktır</b>.
+											  </td>
+											</tr>
+										  </tbody>
+										</table>
+									  </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </section>
+            </div>
+            <!-- page-content end -->
+         </div>
+         <!-- app-content -->
+			</div>
+		</div>
+		{% endif %}
+		
+
+		
+      </div>
+
+
+<!-- Papara -->
+<div class="modal fade" id="papara-modal">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <!-- Modal Header -->
+         <div class="modal-header">
+            <h4 class="modal-title">Papara ile Bakiye Yükle</h4>
+            <button type="button" class="close" data-dismiss="modal">×</button>
+         </div>
+         <!-- Modal body -->
+         <div class="modal-body">
+            <div class="card-box-top" style="color: #2a255c; padding: 20px;border-radius: 10px; margin: 0 0 25px 0; background: rgba(42, 37, 92, 0.15)">
+               <p>Ödeme sonrası destek bölümünden ödeme bildirimi yapmanız gerekmektedir. Örnek;<br /><br />
+                  <strong>Gönderici Adı Soyadı:</strong><br />
+                  <strong>Ödeme Yöntemi:</strong><br />
+                  <strong>Gönderilen Tutar:</strong><br />
+               <p>        
+            </div>
+            <div class="payout mb-5">
+               <table class="table">
+                  <thead class="paHead">
+                     <tr>
+                        <th scope="col">Hesap Sahibi</th>
+                        <th scope="col">Cüzdan Numarası</th>
+                        <th scope="col">Komisyon</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     <tr>
+                        <td>ADEM EKİNCİ</td>
+                        <td>
+                           <code></code>
+                           <p id="papara"><code>9213870357</code> <a id="paparaCopy" href="javascript:void(0);" onclick="copywalletid('#papara')"><small><span  data-toggle="tooltip" data-placement="top" title="" data-original-title="Kopyala" class="far fa-copy"></span></small></a> </p>
+                        </td>
+                        <td>%0</td>
+                     </tr>
+                  </tbody>
+               </table>
+            </div>
+            <a href="tickets"><button type="button" class="btn btn-primary btn-block">Ödeme Bildirimi Yap</button></a>
+         </div>
+      </div>
+   </div>
+</div>
+
+{% include 'footer.twig' %}

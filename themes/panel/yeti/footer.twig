@@ -1,0 +1,117 @@
+{{ footerCode }}
+
+{% for script in scriptList %}
+    <script type="text/javascript" src="{{ script }}"></script>
+{% endfor %}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        setInterval(function () {
+            const leftWell = document.getElementById("left-well");
+            const rightWell = document.getElementById("right-well");
+  			if(leftWell && rightWell)
+            	rightWell.style.height = leftWell.clientHeight - 68 + "px";
+        }, 100);
+    });
+
+    const alertArea = document.getElementById("alertArea");
+    const successArea = document.getElementById("successArea");
+	if(successArea){
+      successArea.style.display = "none";
+      successArea.style.marginTop = "8px";
+    }
+  	if(alertArea){
+    	alertArea.style.display = "none";
+    	alertArea.style.marginTop = "8px";
+	}
+    function handleOrderType(selectObject) {
+        var element = document.getElementById("siparis-grubu");
+        var element2 = document.getElementById("odeme-grubu");
+        var optional = document.getElementById("diger-grubu");
+        if (selectObject.value == "Sipariş" || selectObject.value == "VIP - Sipariş") {
+            element.style.display = "block";
+            element2.style.display = "none";
+            optional.style.display = "inline";
+        } else if (selectObject.value == "Ödeme" || selectObject.value == "VIP - Ödeme") {
+            element.style.display = "none";
+            element2.style.display = "block";
+            optional.style.display = "none";
+        } else if (selectObject.value == "Diğer" || selectObject.value == "VIP - Diğer") {
+            element.style.display = "none";
+            element2.style.display = "none";
+            optional.style.display = "none";
+        }
+    }
+
+    function validateOrderId() {
+        const status = document.getElementById("orderid").value.trim() !== "";
+        if (status === false) {
+            document.getElementById("orderid").className += " is-invalid";
+            alertChild = document.createElement("span");
+            alertChild.style.display = "block";
+            alertChild.innerHTML = "Sipariş numarasını girmek zorunludur!";
+            alertArea.appendChild(alertChild);
+            alertArea.style.display = "block";
+        }
+        return status;
+    }
+
+    function validateMessage() {
+        var status = document.getElementById("mesaj").value.trim() !== "";
+  		const statuss = document.getElementById("mesaj").value.length;
+        if (status === false) {
+            document.getElementById("mesaj").className += " is-invalid";
+            alertChild = document.createElement("span");
+            alertChild.style.display = "block";
+            alertChild.innerHTML = "Mesajı girmek zorunludur!";
+            alertArea.appendChild(alertChild);
+            alertArea.style.display = "block";
+        }
+  		else if (statuss < 10) {
+  			status = false;
+            document.getElementById("mesaj").className += " is-invalid";
+            alertChild = document.createElement("span");
+            alertChild.style.display = "block";
+            alertChild.innerHTML = "Mesajınızı en az 10 karakter ile belirtmelisiniz!";
+            alertArea.appendChild(alertChild);
+            alertArea.style.display = "block";
+        }
+        return status;
+    }
+
+    $("#send-ticket").click(function (event) {
+        event.preventDefault();
+        alertArea.innerHTML = "";
+        alertArea.style.display = "none";
+        successArea.style.display = "none";
+
+        document.getElementById("orderid").className = document.getElementById("orderid").className.replace("is-invalid", "");
+
+        document.getElementById("mesaj").className = document.getElementById("mesaj").className.replace("is-invalid", "");
+
+        var subject = document.getElementById("Konu").value;
+        var message = "";
+        if (subject == "Sipariş" || subject == "VIP - Sipariş") {
+            var status = true;
+            if (!validateOrderId()) status = false;
+            if (!validateMessage()) status = false;
+            if (!status) return;
+
+            message = "Sipariş Numarası: " + document.getElementById("orderid").value + "\n" + "İstek: " + document.getElementById("istek").value + "\n Detaylı Açıklama: " + document.getElementById("mesaj").value;
+        } else if (subject == "Ödeme" || subject == "VIP - Ödeme") {
+            if (!validateMessage()) return;
+
+            message = "Ödeme Problemi: " + document.getElementById("odeme").value + "\n Detaylı Açıklama: " + document.getElementById("mesaj").value;
+        } else {
+            if (!validateMessage()) return;
+
+            message = document.getElementById("mesaj").value;
+        }
+		document.getElementById("tmessage").value = message;
+        $("#ticketsend").submit();
+        return false;
+    });
+</script>
+</body>
+</html>
+

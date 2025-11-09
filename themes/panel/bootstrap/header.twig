@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+{% for lang in site['languages'] %}
+{% if lang['active'] %}
+<html lang="{{ lang['code'] }}">
+{% endif %}
+{% endfor %}
+<head>
+  <base href="{{ site['url'] }}/">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title }}</title>
+  <meta name="keywords" content="{{ keywords }}">
+  <meta name="description" content="{{ description }}">
+  {% if site['favicon'] %}
+    <link rel="shortcut icon" type="image/ico" href="{{ site['favicon'] }}" />
+  {% endif %}
+
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+  
+    {{ headerCode }}
+     
+    {% for style in styleList %}
+      <link rel="stylesheet" type="text/css" href="{{ style }}">
+    {% endfor %}
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+      <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.2/umd/popper.min.js"></script> 
+  </head>
+{% if user['auth'] %}
+<body id="userpanel">
+      <div class="navbar user">
+         <div class="navbar-logo">
+            <a href="/" class="logo-panel">
+              
+               {% if site["logo"] %}
+            <img src="{{ site['logo'] }}" alt="{{ site["site_name"] }}" title="{{ site["site_name"] }}">
+          {% else %}
+            {{ site["site_name"] }}
+          {% endif %}
+            </a>
+         </div>
+         <div class="navbar-user">
+            <button class="burger-icon burger-icon-left mobile-navbar-toggler">
+            <span></span>
+            </button>
+            <div class="nu-right d-flex">
+			  <div class="navbar-menu-wrapper-profile">
+				<div class="navbar-menu-wrapper-profile-name">
+                  	<a href="account" class="logout mr-2"><i class="fas fa-user"></i></a>
+					<a href="logout" class="logout"><i class="fas fa-power-off"></i></a>
+				</div>
+			  </div>
+            </div>
+         </div>
+      </div>
+      <div class="panel-menu open-left">
+         <div class="panel-user">
+            <div class="row">
+               <div class="col-md-3 col-4">
+                  <div class="panel-avatar">
+                     <img src="https://cdn.mypanel.link/n3e4wz/ti61xiia6uqglr24.png" alt="user avatar"> 
+                  </div>
+               </div>
+               <div class="col-md-8 col-8">
+                  <div class="panel-name">{{ user['username'] }} <img src="https://cdn.mypanel.link/n3e4wz/w4hctfc404xarhq9.png" width="20" height="20"></div>
+                  <div class="panel-balance">{{ user['balance'] }}</div>
+               </div>
+            </div>
+         </div>
+         <ul class="panel-menu">
+            {% if ( settings['sms_verify'] == 2 and user['sms_verify'] == 1 ) or (settings['mail_verify'] == 2 and user['mail_verify'] == 1 ) %}
+				<li {% if active_menu == "verify" %} class="active" {% endif %}><a href="/">{{ lang['verify.title'] }}</a></li>
+					{% else %}
+				<li {% if active_menu == "neworder" %} class="menu active" {% else %} class="menu" {% endif %}><a href="/"><i class="fas fa-columns m-icon"></i><span class="ml-3">{{ lang['neworder.title'] }}</span></a></li>
+				<li {% if active_menu == "services" %} class="menu active" {% else %} class="menu" {% endif %}><a href="/services"><i class="fas fa-list-alt m-icon"></i><span class="ml-3">{{ lang['services.title'] }}</span></a></li>
+				<li {% if active_menu == "orders" %} class="menu active" {% else %} class="menu" {% endif %}><a href="/orders"><i class="fas fa-credit-card m-icon"></i><span class="ml-3">{{ lang['orders.title'] }}</span></a></li>
+				{% if site["dripfeedcount"] %}
+				<li {% if active_menu == "dripfeeds" %} class="menu active" {% else %} class="menu" {% endif %}><a href="/dripfeeds"><i class="fas fa-calendar-alt m-icon"></i><span class="ml-3">{{ lang['dripfeeds.title'] }}</span></a></li>
+				{% endif %}
+				{% if site["subscriptionscount"] %}
+				<li {% if active_menu == "subscriptions" %} class="menu active" {% else %} class="menu" {% endif %}><a href="/subscriptions"><i class="fas fa-cogs m-icon"></i><span class="ml-3">{{ lang['subscriptions.title'] }}</span></a></li>
+				{% endif %}
+				<li {% if active_menu == "addfunds" %} class="menu active" {% else %} class="menu" {% endif %}><a href="/addfunds"><i class="fas fa-coins m-icon"></i><span class="ml-3">{{ lang['addfunds.title'] }}</span></a></li>
+				{% if affiliates %}
+				<li {% if active_menu == "affiliates" %} class="menu active" {% else %} class="menu" {% endif %}><a href="/affiliates"><i class="fas fa-user-friends m-icon"></i><span class="ml-3">{{ lang['affiliates.title'] }}</span></a></li>
+				{% endif %}
+				{% if panelSelling %}
+				<li {% if active_menu == "child-panels" %} class="menu active" {% else %} class="menu" {% endif %}><a href="/child-panels"><i class="fas fa-store m-icon"></i><span class="ml-3">{{ lang['childpanels.title'] }}</span></a></li>
+				{% endif %}
+				{% if apiPage %}
+				<li {% if active_menu == "api" %} class="menu active" {% else %} class="menu" {% endif %}><a href="/api"><i class="fas fa-code m-icon"></i><span class="ml-3">{{ lang['api.title'] }}</span></a></li>
+				{% endif %}    
+				{% if ticketPage %}
+				<li {% if active_menu == "tickets" %} class="menu active" {% else %} class="menu" {% endif %}><a href="/tickets"><i class="far fa-life-ring m-icon"></i><span class="ml-3">{{ lang['tickets.title'] }} {% if ticketCount %} <span class="badge">{{ ticketCount }}</span> {% endif %}</span></a></li>  
+				{% endif %}
+				{% if termsPage %} 
+				<li {% if active_menu == "terms" %} class="menu active" {% else %} class="menu" {% endif %}><a href="/terms"><i class="fas fa-university m-icon"></i><span class="ml-3">{{ lang['terms.title'] }}</span></a></li> 
+				{% endif %}	
+				{% if faqPage %} 
+				<li {% if active_menu == "faq" %} class="menu active" {% else %} class="menu" {% endif %}><a href="/faq"><i class="fas fa-upload m-icon"></i><span class="ml-3">{{ lang['faq.title'] }}</span></a></li>
+				{% endif %}		
+            {% endif %} 
+         </ul>
+      </div>
+{% else %}
+ <body class="user">
+      <div class="header">
+         <div class="container">
+            <div class="row">
+               <div class="col-auto align-self-center">
+                  <div class="row">
+                     <div class="col align-self-center">
+                        <div class="site-name">
+                           <a href="/">
+                                    
+               {% if site["logo"] %}
+            <img src="{{ site['logo'] }}" alt="{{ site["site_name"] }}" title="{{ site["site_name"] }}">
+          {% else %}
+            {{ site["site_name"] }}
+          {% endif %}
+                           </a>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="col">
+                  <div class="head-menu">
+                     <div class="row">
+                        <div class="col text-lg-center mh-fullw">
+                           <div class="header-menu">
+
+                           </div>
+                        </div>
+                        <div class="col-left align-self-center mh-fullw mt-5">
+                           <a class="btn btn-first mr-lg-3 mr-0 mb-3 mb-lg-0" href="/">
+                           <i class="fal fa-sign-in mr-2"></i>
+                           Giriş Yap
+                           </a>
+                           <a class="btn btn-secondary mr-lg-3 mr-0 mb-3 mb-lg-0" href="/services">
+                           <i class="fal fa-stream mr-2"></i>
+                           Servis Listesi
+                           </a>
+                          <a class="btn btn-third" href="/signup">
+                           <i class="far fa-users-medical mr-2"></i>
+                           Kayıt Ol
+                           </a>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="col-auto for-mobile align-self-center">
+                  <div class="home-menu-btn py-4" onclick="homeMenuToggle()" style="color: #fff;">
+                     <i class="fas fa-bars fa-2x"></i>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   
+{% endif %}
+
