@@ -240,6 +240,44 @@ elseif ($action == "service_detail"):
       
 
     endif;
+    // Ortalama tamamlanma suresi hesapla
+    $avarageTimeText = "";
+    if($settings["avarage"] == 2):
+        $avgOrders = $conn->prepare("SELECT order_create, last_check FROM orders WHERE service_id=:sid AND order_status='completed' ORDER BY order_id DESC LIMIT 10");
+        $avgOrders->execute(array("sid" => $s_id));
+        
+        if($avgOrders->rowCount() >= 3):
+            $totalSec = 0;
+            $count = 0;
+            foreach($avgOrders as $avgOrder):
+                $basla = strtotime($avgOrder["order_create"]);
+                $bitis = strtotime($avgOrder["last_check"]);
+                if($bitis > $basla):
+                    $totalSec += ($bitis - $basla);
+                    $count++;
+                endif;
+            endforeach;
+            
+            if($count > 0):
+                $avgSec = round($totalSec / $count);
+                // convertSecToStr fonksiyonu varsa kullan, yoksa manuel hesapla
+                if(function_exists('convertSecToStr')):
+                    $avarageTimeText = convertSecToStr($avgSec);
+                else:
+                    $gun = floor($avgSec / 86400);
+                    $saat = floor(($avgSec % 86400) / 3600);
+                    $dakika = floor(($avgSec % 3600) / 60);
+                    $parts = [];
+                    if($gun > 0) $parts[] = $gun . " Gun";
+                    if($saat > 0) $parts[] = $saat . " Saat";
+                    if($dakika > 0) $parts[] = $dakika . " Dakika";
+                    $avarageTimeText = implode(", ", $parts);
+                    if(empty($avarageTimeText)) $avarageTimeText = "1 Dakikadan az";
+                endif;
+            endif;
+        endif;
+    endif;
+
     $runs = $_POST["runs"];
     if (!$runs):
         $runs = 1;
@@ -268,6 +306,9 @@ elseif ($action == "service_detail"):
     endif;
     if ($service["service_package"] == 11 || $service["service_package"] == 12 || $service["service_package"] == 13):
         $data["sub"] = 1;
+    endif;
+    if(!empty($avarageTimeText)):
+        $data["avarageTime"] = $avarageTimeText;
     endif;
     echo json_encode($data);
     unset($_SESSION["data"]);
