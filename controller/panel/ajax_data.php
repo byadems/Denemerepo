@@ -1,5 +1,32 @@
 <?php 
 
+if (!function_exists("getServiceAverageCompletionTime")) {
+    function getServiceAverageCompletionTime($conn, $serviceId, $languageArray)
+    {
+        $orders = $conn->prepare("SELECT order_create,last_check FROM orders WHERE service_id=:service_id && order_status='completed' ORDER BY order_id DESC LIMIT 10");
+        $orders->execute(array("service_id" => $serviceId));
+        $orders = $orders->fetchAll(PDO::FETCH_ASSOC);
+
+        if (count($orders) < 9) {
+            return $languageArray["monitor.error"];
+        }
+
+        $durations = [];
+        foreach ($orders as $order) {
+            $startTime = strtotime($order["order_create"]);
+            $endTime = strtotime($order["last_check"]) - 900;
+            $durations[] = round(abs($startTime - $endTime));
+        }
+
+        $average = explode(".", ortalama($durations));
+        if (!isset($average[0]) || $average[0] == "NaN") {
+            return $languageArray["monitor.error"];
+        }
+
+        return convertSecToStr($average[0]);
+    }
+}
+
 $action = $_POST["action"];
 
 if ($action == "services_list"):
@@ -30,12 +57,103 @@ if ($action == "services_list"):
             if ($_SESSION["data"]["services"] == $service['service_id']):
                 $serviceList .= "selected";
             endif;
-            $serviceList .= ">" . $service["service_id"] . " - " . $name . " - " . priceFormat(service_price($service["service_id"])) . $currency . "</option>";
+            $serviceList .= " data-category='" . $category . "'>" . $service["service_id"] . " - " . $name . " - " . priceFormat(service_price($service["service_id"])) . $currency . "</option>";
         endif;
     }
     
     echo json_encode(['services' => $serviceList]);
-    
+
+elseif ($action == "all_services_list"):
+    $categoriesRows = $conn->prepare("SELECT category_id,category_secret FROM categories WHERE category_type=:type ORDER BY categories.category_line ASC");
+    $categoriesRows->execute(array("type" => 2));
+    $categoriesRows = $categoriesRows->fetchAll(PDO::FETCH_ASSOC);
+
+    $serviceList = "";
+
+    foreach ($categoriesRows as $categoryRow) {
+        $search = $conn->prepare("SELECT id FROM clients_category WHERE category_id=:category && client_id=:c_id");
+        $search->execute(array("category" => $categoryRow["category_id"], "c_id" => $user["client_id"]));
+
+        if ($categoryRow["category_secret"] == 2 || $search->rowCount()) {
+            $services = $conn->prepare("SELECT * FROM services WHERE category_id=:c_id && service_type=:type ORDER BY service_line");
+            $services->execute(array('c_id' => $categoryRow["category_id"], 'type' => 2));
+            $services = $services->fetchAll(PDO::FETCH_ASSOC);
+
+            foreach ($services as $service) {
+                $searchService = $conn->prepare("SELECT id FROM clients_service WHERE service_id=:service && client_id=:c_id");
+                $searchService->execute(array("service" => $service["service_id"], "c_id" => $user["client_id"]));
+
+                if ($service["service_secret"] == 2 || $searchService->rowCount()) {
+                    $multiName = json_decode($service["name_lang"], true);
+                    if ($multiName[$user["lang"]]) {
+                        $name = $multiName[$user["lang"]];
+                    } else {
+                        $name = $service["service_name"];
+                    }
+
+                    $serviceList .= "<option value='" . $service['service_id'] . "' data-category='" . $categoryRow["category_id"] . "'>" . $service["service_id"] . " - " . $name . " - " . priceFormat(service_price($service["service_id"])) . $currency . "</option>";
+                }
+            }
+        }
+    }
+
+    if (!$serviceList) {
+        $serviceList = "<option value='0'>" . $languageArray["neworder.no.service"] . "</option>";
+    }
+
+    echo json_encode(['services' => $serviceList]);
+
+elseif ($action == "search_services_list"):
+    $query = trim(mb_strtolower($_POST["query"]));
+    $categoriesRows = $conn->prepare("SELECT category_id,category_secret FROM categories WHERE category_type=:type ORDER BY categories.category_line ASC");
+    $categoriesRows->execute(array("type" => 2));
+    $categoriesRows = $categoriesRows->fetchAll(PDO::FETCH_ASSOC);
+
+    $serviceList = "";
+
+    foreach ($categoriesRows as $categoryRow) {
+        $search = $conn->prepare("SELECT id FROM clients_category WHERE category_id=:category && client_id=:c_id");
+        $search->execute(array("category" => $categoryRow["category_id"], "c_id" => $user["client_id"]));
+
+        if ($categoryRow["category_secret"] == 2 || $search->rowCount()) {
+            $services = $conn->prepare("SELECT * FROM services WHERE category_id=:c_id && service_type=:type ORDER BY service_line");
+            $services->execute(array('c_id' => $categoryRow["category_id"], 'type' => 2));
+            $services = $services->fetchAll(PDO::FETCH_ASSOC);
+
+            foreach ($services as $service) {
+                $searchService = $conn->prepare("SELECT id FROM clients_service WHERE service_id=:service && client_id=:c_id");
+                $searchService->execute(array("service" => $service["service_id"], "c_id" => $user["client_id"]));
+
+                if ($service["service_secret"] == 2 || $searchService->rowCount()) {
+                    $multiName = json_decode($service["name_lang"], true);
+                    if ($multiName[$user["lang"]]) {
+                        $name = $multiName[$user["lang"]];
+                    } else {
+                        $name = $service["service_name"];
+                    }
+
+                    $allLangNames = implode(" ", array_values((array)$multiName));
+                    $searchText = mb_strtolower(
+                        $service["service_id"] . " " .
+                        $name . " " .
+                        $service["service_name"] . " " .
+                        $allLangNames
+                    );
+
+                    if (!$query || mb_strpos($searchText, $query) !== false) {
+                        $serviceList .= "<option value='" . $service['service_id'] . "' data-category='" . $categoryRow["category_id"] . "'>" . $service["service_id"] . " - " . $name . " - " . priceFormat(service_price($service["service_id"])) . $currency . "</option>";
+                    }
+                }
+            }
+        }
+    }
+
+    if (!$serviceList) {
+        $serviceList = "<option value='0'>" . $languageArray["neworder.no.service"] . "</option>";
+    }
+
+    echo json_encode(['services' => $serviceList]);
+
 elseif ($action == "service_detail"):
     $s_id = $_POST["service"];
     $service = $conn->prepare("SELECT * FROM services WHERE service_id=:s_id");
@@ -45,6 +163,11 @@ elseif ($action == "service_detail"):
     $service = $service->fetch(PDO::FETCH_ASSOC);
     $service["service_price"] = service_price($service["service_id"]);
     $serviceDetails = "";
+    $avarageTime = "";
+
+    if ($settings["avarage"] == 2) {
+        $avarageTime = getServiceAverageCompletionTime($conn, $service["service_id"], $languageArray);
+    }
    
     $multiDesc = json_decode($service["description_lang"], true);
    
@@ -254,17 +377,17 @@ elseif ($action == "service_detail"):
     $quantity = $_POST["quantity"];
     if ($s_id != 0 && $dripfeed == "bos"):
         $price = $quantity * $service["service_price"] / 1000;
-        $data = ['details' => $serviceDetails, 'price' => priceFormat($price) . $currency];
+        $data = ['details' => $serviceDetails, 'price' => priceFormat($price) . $currency, 'avarageTime' => $avarageTime];
     elseif ($s_id != 0 && $dripfeed == "var"):
         $price = $runs * $quantity * $service["service_price"] / 1000;
-        $data = ['details' => $serviceDetails, 'price' => priceFormat($price) . $currency];
+        $data = ['details' => $serviceDetails, 'price' => priceFormat($price) . $currency, 'avarageTime' => $avarageTime];
     elseif ($s_id != 0 && !isset($dripfeed) && $service["service_package"] != 2):
-        $data = ['details' => $serviceDetails];
+        $data = ['details' => $serviceDetails, 'avarageTime' => $avarageTime];
     elseif(!isset($dripfeed) && $service["service_package"] == 2):
         $price = $service["service_price"];
-        $data = ['details' => $serviceDetails, 'price'=>priceFormat($price) . $currency];
+        $data = ['details' => $serviceDetails, 'price'=>priceFormat($price) . $currency, 'avarageTime' => $avarageTime];
     else:
-        $data = ['empty' => 1];
+        $data = ['empty' => 1, 'avarageTime' => $avarageTime];
     endif;
     if ($service["service_package"] == 11 || $service["service_package"] == 12 || $service["service_package"] == 13):
         $data["sub"] = 1;
