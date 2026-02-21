@@ -11,6 +11,7 @@ function category_detail() {
             setList(0);
             setList(1);
             $("#orderform-service").html($("#orderform-service").attr("data-label")+": "+$("#neworder_services").val());
+            ($("#neworder_service_search").val() || "").trim().length && filterNeworderServices();
 
         },
         "json"
@@ -26,7 +27,7 @@ function service_detail() {
             
             if (e.avarageTime) {
                     $("#tamamlanmaSuresiDiv").show();
-                    $("#tamamlanmaSuresi").text(e.avarageTime);
+                    $("#tamamlanmaSuresi").val(e.avarageTime);
                 } else {
                     $("#tamamlanmaSuresiDiv").hide();
                 }
@@ -60,6 +61,20 @@ function service_detail() {
         },
         "json"
     );
+}
+
+
+function filterNeworderServices() {
+    var keyword = ($("#neworder_service_search").val() || "").trim();
+
+    if (!keyword.length) return void category_detail();
+
+    $.post("ajax_data", {
+        action: "search_all_services",
+        keyword: keyword
+    }, function(e) {
+        e.hasService ? ($("#neworder_services").html(e.services), $("#neworder_services option:first").prop("selected", !0), $("#neworder_category").val($("#neworder_services option:selected").attr("data-category")), setList(0), setList(1), service_detail()) : ($("#neworder_services").html(""), $("#neworder_fields").html(""), $("#tamamlanmaSuresiDiv").hide(), $("#charge").val(""))
+    }, "json")
 }
 
 function comment_charge() {
@@ -160,7 +175,10 @@ $(document).ready(function() {
     category_detail(), $("#neworder_category").change(function() {
         category_detail()
     }), $("#neworder_services").change(function() {
-        service_detail()
+        var selectedCategory = $("#neworder_services option:selected").attr("data-category");
+        selectedCategory && $("#neworder_category").val(selectedCategory), service_detail()
+    }), $(document).on("keyup", "#neworder_service_search", function() {
+        filterNeworderServices()
     }), $(document).on("keyup", "#order_quantity", function() {
         var e, r = $("#neworder_services").val(),
             n = $("#neworder_quantity").val(),
@@ -213,7 +231,10 @@ $(document).ready(function() {
     })), "undefined" != typeof serviceArray && (updateServiceList(r), $("#neworder_category").change(function() {
         clearFields(), updateServiceList(r)
     }), $("#neworder_services").change(function() {
-        clearFields(), updateDetail(r)
+        var selectedCategory = $("#neworder_services option:selected").attr("data-category");
+        selectedCategory && $("#neworder_category").val(selectedCategory), clearFields(), updateDetail(r)
+    }), $("#neworder_service_search").on("keyup", function() {
+        filterNeworderServices()
     }), $("#neworder_quantity").on("keyup", function() {
         updateRate(r)
     }), $("#dripfeed-runs").on("keyup", function() {
