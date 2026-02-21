@@ -132,7 +132,14 @@ elseif ($action == "search_services_list"):
                         $name = $service["service_name"];
                     }
 
-                    $searchText = mb_strtolower($service["service_id"] . " " . $name);
+                    $allLangNames = implode(" ", array_values((array)$multiName));
+                    $searchText = mb_strtolower(
+                        $service["service_id"] . " " .
+                        $name . " " .
+                        $service["service_name"] . " " .
+                        $allLangNames
+                    );
+
                     if (!$query || mb_strpos($searchText, $query) !== false) {
                         $serviceList .= "<option value='" . $service['service_id'] . "' data-category='" . $categoryRow["category_id"] . "'>" . $service["service_id"] . " - " . $name . " - " . priceFormat(service_price($service["service_id"])) . $currency . "</option>";
                     }
