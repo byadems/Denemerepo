@@ -57,12 +57,52 @@ if ($action == "services_list"):
             if ($_SESSION["data"]["services"] == $service['service_id']):
                 $serviceList .= "selected";
             endif;
-            $serviceList .= ">" . $service["service_id"] . " - " . $name . " - " . priceFormat(service_price($service["service_id"])) . $currency . "</option>";
+            $serviceList .= " data-category='" . $category . "'>" . $service["service_id"] . " - " . $name . " - " . priceFormat(service_price($service["service_id"])) . $currency . "</option>";
         endif;
     }
     
     echo json_encode(['services' => $serviceList]);
-    
+
+elseif ($action == "all_services_list"):
+    $categoriesRows = $conn->prepare("SELECT category_id,category_secret FROM categories WHERE category_type=:type ORDER BY categories.category_line ASC");
+    $categoriesRows->execute(array("type" => 2));
+    $categoriesRows = $categoriesRows->fetchAll(PDO::FETCH_ASSOC);
+
+    $serviceList = "";
+
+    foreach ($categoriesRows as $categoryRow) {
+        $search = $conn->prepare("SELECT id FROM clients_category WHERE category_id=:category && client_id=:c_id");
+        $search->execute(array("category" => $categoryRow["category_id"], "c_id" => $user["client_id"]));
+
+        if ($categoryRow["category_secret"] == 2 || $search->rowCount()) {
+            $services = $conn->prepare("SELECT * FROM services WHERE category_id=:c_id && service_type=:type ORDER BY service_line");
+            $services->execute(array('c_id' => $categoryRow["category_id"], 'type' => 2));
+            $services = $services->fetchAll(PDO::FETCH_ASSOC);
+
+            foreach ($services as $service) {
+                $searchService = $conn->prepare("SELECT id FROM clients_service WHERE service_id=:service && client_id=:c_id");
+                $searchService->execute(array("service" => $service["service_id"], "c_id" => $user["client_id"]));
+
+                if ($service["service_secret"] == 2 || $searchService->rowCount()) {
+                    $multiName = json_decode($service["name_lang"], true);
+                    if ($multiName[$user["lang"]]) {
+                        $name = $multiName[$user["lang"]];
+                    } else {
+                        $name = $service["service_name"];
+                    }
+
+                    $serviceList .= "<option value='" . $service['service_id'] . "' data-category='" . $categoryRow["category_id"] . "'>" . $service["service_id"] . " - " . $name . " - " . priceFormat(service_price($service["service_id"])) . $currency . "</option>";
+                }
+            }
+        }
+    }
+
+    if (!$serviceList) {
+        $serviceList = "<option value='0'>" . $languageArray["neworder.no.service"] . "</option>";
+    }
+
+    echo json_encode(['services' => $serviceList]);
+
 elseif ($action == "service_detail"):
     $s_id = $_POST["service"];
     $service = $conn->prepare("SELECT * FROM services WHERE service_id=:s_id");

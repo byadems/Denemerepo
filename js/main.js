@@ -1,3 +1,5 @@
+var allNeworderServicesLoaded = !1, allNeworderServicesMarkup = "";
+
 function category_detail() {
     var e = $("#neworder_category").val();
     $.post(
@@ -11,7 +13,7 @@ function category_detail() {
             setList(0);
             setList(1);
             $("#orderform-service").html($("#orderform-service").attr("data-label")+": "+$("#neworder_services").val());
-            filterNeworderServices();
+            ($("#neworder_service_search").val() || "").trim().length && filterNeworderServices();
 
         },
         "json"
@@ -64,27 +66,24 @@ function service_detail() {
 }
 
 
+function loadAllNeworderServices(callback) {
+    allNeworderServicesLoaded ? callback() : $.post("ajax_data", {
+        action: "all_services_list"
+    }, function(e) {
+        allNeworderServicesMarkup = e.services || "", allNeworderServicesLoaded = !0, callback()
+    }, "json")
+}
+
 function filterNeworderServices() {
-    var keyword = ($("#neworder_service_search").val() || "").toLowerCase(),
-        hasVisible = !1;
-
-    $("#neworder_services option").each(function () {
-        var optionText = $(this).text().toLowerCase(),
-            shouldShow = optionText.indexOf(keyword) > -1;
-
-        $(this).toggle(shouldShow);
-        if (shouldShow && !hasVisible) {
-            $("#neworder_services").val($(this).val());
-            hasVisible = !0;
-        }
-    });
-
-    if (hasVisible) {
-        service_detail();
-    } else {
-        $("#neworder_fields").html("");
-        $("#tamamlanmaSuresiDiv").hide();
-    }
+    var keyword = ($("#neworder_service_search").val() || "").toLowerCase().trim();
+    if (!keyword.length) return void category_detail();
+    loadAllNeworderServices(function() {
+        var html = "", hasVisible = !1;
+        $("<select>" + allNeworderServicesMarkup + "</select>").find("option").each(function() {
+            var optionText = $(this).text().toLowerCase();
+            optionText.indexOf(keyword) > -1 && (html += this.outerHTML, hasVisible = !0)
+        }), hasVisible ? ($("#neworder_services").html(html), $("#neworder_services option:first").prop("selected", !0), $("#neworder_category").val($("#neworder_services option:selected").attr("data-category")), setList(0), setList(1), service_detail()) : ($("#neworder_services").html(""), $("#neworder_fields").html(""), $("#tamamlanmaSuresiDiv").hide(), $("#charge").val(""))
+    })
 }
 
 function comment_charge() {
@@ -185,7 +184,8 @@ $(document).ready(function() {
     category_detail(), $("#neworder_category").change(function() {
         category_detail()
     }), $("#neworder_services").change(function() {
-        service_detail()
+        var selectedCategory = $("#neworder_services option:selected").attr("data-category");
+        selectedCategory && $("#neworder_category").val(selectedCategory), service_detail()
     }), $(document).on("keyup", "#neworder_service_search", function() {
         filterNeworderServices()
     }), $(document).on("keyup", "#order_quantity", function() {
@@ -240,7 +240,8 @@ $(document).ready(function() {
     })), "undefined" != typeof serviceArray && (updateServiceList(r), $("#neworder_category").change(function() {
         clearFields(), updateServiceList(r)
     }), $("#neworder_services").change(function() {
-        clearFields(), updateDetail(r)
+        var selectedCategory = $("#neworder_services option:selected").attr("data-category");
+        selectedCategory && $("#neworder_category").val(selectedCategory), clearFields(), updateDetail(r)
     }), $("#neworder_service_search").on("keyup", function() {
         filterNeworderServices()
     }), $("#neworder_quantity").on("keyup", function() {
