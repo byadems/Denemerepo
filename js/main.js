@@ -11,6 +11,7 @@ function category_detail() {
             setList(0);
             setList(1);
             $("#orderform-service").html($("#orderform-service").attr("data-label")+": "+$("#neworder_services").val());
+            filterNeworderServices();
 
         },
         "json"
@@ -26,7 +27,7 @@ function service_detail() {
             
             if (e.avarageTime) {
                     $("#tamamlanmaSuresiDiv").show();
-                    $("#tamamlanmaSuresi").text(e.avarageTime);
+                    $("#tamamlanmaSuresi").val(e.avarageTime);
                 } else {
                     $("#tamamlanmaSuresiDiv").hide();
                 }
@@ -60,6 +61,30 @@ function service_detail() {
         },
         "json"
     );
+}
+
+
+function filterNeworderServices() {
+    var keyword = ($("#neworder_service_search").val() || "").toLowerCase(),
+        hasVisible = !1;
+
+    $("#neworder_services option").each(function () {
+        var optionText = $(this).text().toLowerCase(),
+            shouldShow = optionText.indexOf(keyword) > -1;
+
+        $(this).toggle(shouldShow);
+        if (shouldShow && !hasVisible) {
+            $("#neworder_services").val($(this).val());
+            hasVisible = !0;
+        }
+    });
+
+    if (hasVisible) {
+        service_detail();
+    } else {
+        $("#neworder_fields").html("");
+        $("#tamamlanmaSuresiDiv").hide();
+    }
 }
 
 function comment_charge() {
@@ -161,6 +186,8 @@ $(document).ready(function() {
         category_detail()
     }), $("#neworder_services").change(function() {
         service_detail()
+    }), $(document).on("keyup", "#neworder_service_search", function() {
+        filterNeworderServices()
     }), $(document).on("keyup", "#order_quantity", function() {
         var e, r = $("#neworder_services").val(),
             n = $("#neworder_quantity").val(),
@@ -214,6 +241,8 @@ $(document).ready(function() {
         clearFields(), updateServiceList(r)
     }), $("#neworder_services").change(function() {
         clearFields(), updateDetail(r)
+    }), $("#neworder_service_search").on("keyup", function() {
+        filterNeworderServices()
     }), $("#neworder_quantity").on("keyup", function() {
         updateRate(r)
     }), $("#dripfeed-runs").on("keyup", function() {

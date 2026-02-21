@@ -1,5 +1,32 @@
 <?php 
 
+if (!function_exists("getServiceAverageCompletionTime")) {
+    function getServiceAverageCompletionTime($conn, $serviceId, $languageArray)
+    {
+        $orders = $conn->prepare("SELECT order_create,last_check FROM orders WHERE service_id=:service_id && order_status='completed' ORDER BY order_id DESC LIMIT 10");
+        $orders->execute(array("service_id" => $serviceId));
+        $orders = $orders->fetchAll(PDO::FETCH_ASSOC);
+
+        if (count($orders) < 9) {
+            return $languageArray["monitor.error"];
+        }
+
+        $durations = [];
+        foreach ($orders as $order) {
+            $startTime = strtotime($order["order_create"]);
+            $endTime = strtotime($order["last_check"]) - 900;
+            $durations[] = round(abs($startTime - $endTime));
+        }
+
+        $average = explode(".", ortalama($durations));
+        if (!isset($average[0]) || $average[0] == "NaN") {
+            return $languageArray["monitor.error"];
+        }
+
+        return convertSecToStr($average[0]);
+    }
+}
+
 $action = $_POST["action"];
 
 if ($action == "services_list"):
@@ -45,6 +72,11 @@ elseif ($action == "service_detail"):
     $service = $service->fetch(PDO::FETCH_ASSOC);
     $service["service_price"] = service_price($service["service_id"]);
     $serviceDetails = "";
+    $avarageTime = "";
+
+    if ($settings["avarage"] == 2) {
+        $avarageTime = getServiceAverageCompletionTime($conn, $service["service_id"], $languageArray);
+    }
    
     $multiDesc = json_decode($service["description_lang"], true);
    
@@ -254,17 +286,17 @@ elseif ($action == "service_detail"):
     $quantity = $_POST["quantity"];
     if ($s_id != 0 && $dripfeed == "bos"):
         $price = $quantity * $service["service_price"] / 1000;
-        $data = ['details' => $serviceDetails, 'price' => priceFormat($price) . $currency];
+        $data = ['details' => $serviceDetails, 'price' => priceFormat($price) . $currency, 'avarageTime' => $avarageTime];
     elseif ($s_id != 0 && $dripfeed == "var"):
         $price = $runs * $quantity * $service["service_price"] / 1000;
-        $data = ['details' => $serviceDetails, 'price' => priceFormat($price) . $currency];
+        $data = ['details' => $serviceDetails, 'price' => priceFormat($price) . $currency, 'avarageTime' => $avarageTime];
     elseif ($s_id != 0 && !isset($dripfeed) && $service["service_package"] != 2):
-        $data = ['details' => $serviceDetails];
+        $data = ['details' => $serviceDetails, 'avarageTime' => $avarageTime];
     elseif(!isset($dripfeed) && $service["service_package"] == 2):
         $price = $service["service_price"];
-        $data = ['details' => $serviceDetails, 'price'=>priceFormat($price) . $currency];
+        $data = ['details' => $serviceDetails, 'price'=>priceFormat($price) . $currency, 'avarageTime' => $avarageTime];
     else:
-        $data = ['empty' => 1];
+        $data = ['empty' => 1, 'avarageTime' => $avarageTime];
     endif;
     if ($service["service_package"] == 11 || $service["service_package"] == 12 || $service["service_package"] == 13):
         $data["sub"] = 1;

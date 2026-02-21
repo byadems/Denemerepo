@@ -1,6 +1,34 @@
 <?php
  
 $title .= $languageArray["services.title"];
+
+if (!function_exists("getServiceAverageCompletionTime")) {
+  function getServiceAverageCompletionTime($conn, $serviceId, $languageArray)
+  {
+    $orders = $conn->prepare("SELECT order_create,last_check FROM orders WHERE service_id=:service_id && order_status='completed' ORDER BY order_id DESC LIMIT 10");
+    $orders->execute(array("service_id" => $serviceId));
+    $orders = $orders->fetchAll(PDO::FETCH_ASSOC);
+
+    if (count($orders) < 9) {
+      return $languageArray["monitor.error"];
+    }
+
+    $durations = [];
+    foreach ($orders as $order) {
+      $startTime = strtotime($order["order_create"]);
+      $endTime = strtotime($order["last_check"]) - 900;
+      $durations[] = round(abs($startTime - $endTime));
+    }
+
+    $average = explode(".", ortalama($durations));
+
+    if (!isset($average[0]) || $average[0] == "NaN") {
+      return $languageArray["monitor.error"];
+    }
+
+    return convertSecToStr($average[0]);
+  }
+}
  
 if( $settings["service_list"] == 1 && !$_SESSION["neira_userlogin"] ):
   header("Location:".site_url());
@@ -32,42 +60,9 @@ $categories = [];
      
        foreach ( $rows as $row ) {
            
-        if($settings["avarage"] == 2):      
-           
-         
+        if($settings["avarage"] == 2):
                 $avarageTime = true;
-               
-                $orders = $conn->prepare("SELECT order_create,last_check FROM orders  WHERE service_id='$row[service_id]' && order_status='completed' order by order_id DESC LIMIT 10");
-                $orders->execute(array());
-               
-                if($orders->rowCount() < 9) {
-                        $callback = $languageArray["monitor.error"];
-                }
-           
-                foreach($orders as $order) {
-                    $basla = strtotime($order["order_create"]);
-                    $bitis = strtotime($order["last_check"]);
-                    $bitissil = $bitis-900;
-                    $ortalama= ($bitissil-$basla) ;
-                    $orta = $ortalama/60;
-                    $ortalama1 = round(abs($basla - $bitissil));
-                   
-                    $callback = $ortalama1.",";
-                }
- 
-                $parcala = explode(",",$callback);
-   
-                $dizi = array($parcala["0"],$parcala["2"],$parcala["3"],$parcala["4"],$parcala["5"],$parcala["6"],$parcala["7"],$parcala["8"],$parcala["9"],$parcala["1"]);
-                $ortalamamiz = explode(".",ortalama($dizi));
-               
-                if($ortalamamiz[0] == "NaN") {
-                  $veri = $languageArray["monitor.error"];
-                } else {
-                  $veri = convertSecToStr($ortalamamiz[0]);
-                }  
-               
-                $s["service_speed"] = $veri;
-               
+                $s["service_speed"] = getServiceAverageCompletionTime($conn, $row["service_id"], $languageArray);
         endif;
             $multiName   =  json_decode($row["name_lang"],true);
            
