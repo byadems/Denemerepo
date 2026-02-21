@@ -1,5 +1,3 @@
-var allNeworderServicesLoaded = !1, allNeworderServicesMarkup = "";
-
 function category_detail() {
     var e = $("#neworder_category").val();
     $.post(
@@ -66,24 +64,16 @@ function service_detail() {
 }
 
 
-function loadAllNeworderServices(callback) {
-    allNeworderServicesLoaded ? callback() : $.post("ajax_data", {
-        action: "all_services_list"
-    }, function(e) {
-        allNeworderServicesMarkup = e.services || "", allNeworderServicesLoaded = !0, callback()
-    }, "json")
-}
-
 function filterNeworderServices() {
-    var keyword = ($("#neworder_service_search").val() || "").toLowerCase().trim();
+    var keyword = ($("#neworder_service_search").val() || "").trim();
     if (!keyword.length) return void category_detail();
-    loadAllNeworderServices(function() {
-        var html = "", hasVisible = !1;
-        $("<select>" + allNeworderServicesMarkup + "</select>").find("option").each(function() {
-            var optionText = $(this).text().toLowerCase();
-            optionText.indexOf(keyword) > -1 && (html += this.outerHTML, hasVisible = !0)
-        }), hasVisible ? ($("#neworder_services").html(html), $("#neworder_services option:first").prop("selected", !0), $("#neworder_category").val($("#neworder_services option:selected").attr("data-category")), setList(0), setList(1), service_detail()) : ($("#neworder_services").html(""), $("#neworder_fields").html(""), $("#tamamlanmaSuresiDiv").hide(), $("#charge").val(""))
-    })
+    $.post("ajax_data", {
+        action: "search_services_list",
+        query: keyword
+    }, function(e) {
+        var noService = "0" == $("<select>" + e.services + "</select>").find("option:first").val();
+        noService ? ($("#neworder_services").html(""), $("#neworder_fields").html(""), $("#tamamlanmaSuresiDiv").hide(), $("#charge").val("")) : ($("#neworder_services").html(e.services), $("#neworder_services option:first").prop("selected", !0), $("#neworder_category").val($("#neworder_services option:selected").attr("data-category")), setList(0), setList(1), service_detail())
+    }, "json")
 }
 
 function comment_charge() {
