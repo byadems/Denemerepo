@@ -75,6 +75,11 @@
 						{% endif %}
 						 
                     <div class="form-group">
+                        <label for="neworder_service_search" class="control-label">Tüm Servislerde Ara</label>
+                        <input type="text" class="form-control" id="neworder_service_search" placeholder="Servis ara...">
+                    </div>
+
+                    <div class="form-group">
                         <label id="orderform-service" for="orderform-service" class="control-label" data-label="{{ lang["neworder.service"] }}">Servis</label>
 
                         <select class="form-control" id="neworder_services" name="services">
@@ -82,6 +87,11 @@
                     </div>
 						 
 							<div id="neworder_fields"></div>
+
+                              <div class="form-group mt-2" id="tamamlanmaSuresiDiv" style="display:none;">
+                                <label class="control-label" for="tamamlanmaSuresi">Tamamlanma Süresi</label>
+                                <input type="text" class="form-control" id="tamamlanmaSuresi" readonly>
+                              </div>
 
 							  <div class="form-group mt-2" id="charge_div">
 								<label class="control-label" for="field-orderform-fields-quantity">Tutar</label>
