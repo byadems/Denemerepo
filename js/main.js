@@ -224,4 +224,83 @@ $(document).ready(function() {
         $("#dripfeedcheckbox").prop("checked") ? $("#dripfeed-options").removeClass() : $("#dripfeed-options").addClass("hidden"), updateRate(r)
     })), deleteSession()
 });
-sdfsdf
+
+
+function setupGlobalServiceSearch() {
+    if (!$("#neworder_services").length || $("#globalServiceSearch").length) {
+        return;
+    }
+
+    var searchHtml = '<div class="form-group" id="globalServiceSearchWrap">' +
+        '<label class="control-label" for="globalServiceSearch">Tüm Servislerde Ara</label>' +
+        '<input type="text" class="form-control" id="globalServiceSearch" placeholder="Servis adı veya ID ile ara">' +
+        '<small class="help-block" id="globalServiceSearchCount"></small>' +
+        '<div class="list-group" id="globalServiceResults" style="max-height:240px; overflow:auto; display:none;"></div>' +
+        '</div>';
+
+    $("#neworder_services").closest(".form-group").before(searchHtml);
+
+    var avgHtml = '<div class="form-group" id="tamamlanmaSuresiDiv" style="display:none;">' +
+        '<label class="control-label">Ortalama Tamamlanma Süresi</label>' +
+        '<input type="text" class="form-control" id="tamamlanmaSuresi" readonly>' +
+        '</div>';
+
+    if (!$("#tamamlanmaSuresiDiv").length) {
+        $("#neworder_fields").before(avgHtml);
+    }
+
+    var timeout = null;
+    $(document).on("input", "#globalServiceSearch", function () {
+        var query = $.trim($(this).val());
+        clearTimeout(timeout);
+
+        if (!query.length) {
+            $("#globalServiceResults").hide().empty();
+            $("#globalServiceSearchCount").text("");
+            return;
+        }
+
+        timeout = setTimeout(function () {
+            $.post("ajax_data", { action: "services_search_all", search: query }, function (response) {
+                var $results = $("#globalServiceResults");
+                $results.empty();
+
+                if (!response.services || !response.services.length) {
+                    $("#globalServiceSearchCount").text("Sonuç bulunamadı.");
+                    $results.hide();
+                    return;
+                }
+
+                $("#globalServiceSearchCount").text(response.services.length + " sonuç bulundu.");
+
+                $.each(response.services, function (_, service) {
+                    var item = '<button type="button" class="list-group-item" data-service-id="' + service.service_id + '" data-category-id="' + service.category_id + '">' + service.name + '</button>';
+                    $results.append(item);
+                });
+
+                $results.show();
+            }, "json");
+        }, 250);
+    });
+
+    $(document).on("click", "#globalServiceResults .list-group-item", function () {
+        var categoryId = $(this).attr("data-category-id");
+        var serviceId = $(this).attr("data-service-id");
+
+        $("#neworder_category").val(categoryId).trigger("change");
+
+        setTimeout(function () {
+            $("#neworder_services").val(serviceId).trigger("change");
+        }, 200);
+
+        $("#globalServiceSearch").val($(this).text());
+        $("#globalServiceResults").hide();
+    });
+}
+
+$(function () {
+    setupGlobalServiceSearch();
+    setTimeout(function () {
+        service_detail();
+    }, 300);
+});
