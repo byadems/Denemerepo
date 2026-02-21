@@ -2,6 +2,34 @@
 
 $action = $_POST["action"];
 
+function getServiceAvarageTime($conn, $serviceId, $languageArray)
+{
+    $orders = $conn->prepare("SELECT order_create,last_check FROM orders WHERE service_id=:service_id && order_status='completed' ORDER BY order_id DESC LIMIT 10");
+    $orders->execute(array("service_id" => $serviceId));
+
+    if ($orders->rowCount() < 9) {
+        return $languageArray["monitor.error"];
+    }
+
+    foreach ($orders as $order) {
+        $basla = strtotime($order["order_create"]);
+        $bitis = strtotime($order["last_check"]);
+        $bitissil = $bitis - 900;
+        $ortalama1 = round(abs($basla - $bitissil));
+        $callback = $ortalama1 . ",";
+    }
+
+    $parcala = explode(",", $callback);
+    $dizi = array($parcala["0"], $parcala["2"], $parcala["3"], $parcala["4"], $parcala["5"], $parcala["6"], $parcala["7"], $parcala["8"], $parcala["9"], $parcala["1"]);
+    $ortalamamiz = explode(".", ortalama($dizi));
+
+    if ($ortalamamiz[0] == "NaN") {
+        return $languageArray["monitor.error"];
+    }
+
+    return convertSecToStr($ortalamamiz[0]);
+}
+
 if ($action == "services_list"):
     $category = $_POST["category"];
     $services = $conn->prepare("SELECT * FROM services WHERE category_id=:c_id && service_type=:type ORDER BY service_line ");
@@ -269,9 +297,63 @@ elseif ($action == "service_detail"):
     if ($service["service_package"] == 11 || $service["service_package"] == 12 || $service["service_package"] == 13):
         $data["sub"] = 1;
     endif;
+
+    if ($settings["avarage"] == 2 && $s_id != 0):
+        $data["avarageTime"] = getServiceAvarageTime($conn, $s_id, $languageArray);
+    endif;
+
     echo json_encode($data);
     unset($_SESSION["data"]);
-    
+
+elseif ($action == "services_search_all"):
+    $searchText = trim($_POST["search"]);
+
+    $rows = $conn->prepare("SELECT service_id, category_id, name_lang, service_name, service_secret FROM services WHERE service_type=:type ORDER BY service_line ASC");
+    $rows->execute(array("type" => 2));
+    $rows = $rows->fetchAll(PDO::FETCH_ASSOC);
+
+    $services = array();
+    foreach ($rows as $row) {
+        $searchService = $conn->prepare("SELECT id FROM clients_service WHERE service_id=:service && client_id=:c_id");
+        $searchService->execute(array("service" => $row["service_id"], "c_id" => $user["client_id"]));
+
+        if ($row["service_secret"] != 2 && !$searchService->rowCount()) {
+            continue;
+        }
+
+        $searchCategory = $conn->prepare("SELECT category_secret FROM categories WHERE category_id=:category");
+        $searchCategory->execute(array("category" => $row["category_id"]));
+        $searchCategory = $searchCategory->fetch(PDO::FETCH_ASSOC);
+
+        if ($searchCategory["category_secret"] != 2) {
+            $clientCategory = $conn->prepare("SELECT id FROM clients_category WHERE category_id=:category && client_id=:c_id");
+            $clientCategory->execute(array("category" => $row["category_id"], "c_id" => $user["client_id"]));
+            if (!$clientCategory->rowCount()) {
+                continue;
+            }
+        }
+
+        $multiName = json_decode($row["name_lang"], true);
+        $name = $multiName[$user["lang"]] ? $multiName[$user["lang"]] : $row["service_name"];
+        $serviceText = $row["service_id"] . " - " . $name . " - " . priceFormat(service_price($row["service_id"])) . $currency;
+
+        if ($searchText && stripos($serviceText, $searchText) === false) {
+            continue;
+        }
+
+        $services[] = array(
+            "service_id" => $row["service_id"],
+            "category_id" => $row["category_id"],
+            "name" => $serviceText
+        );
+
+        if (count($services) >= 100) {
+            break;
+        }
+    }
+
+    echo json_encode(array("services" => $services));
+
 elseif ($action == "service_price"):
     $service = $_POST["service"];
     $quantity = $_POST["quantity"];
@@ -313,4 +395,3 @@ elseif ($action == "service_price"):
     echo json_encode(['price' => $totalPrice, 'commentsCount' => $quantity, 'totalQuantity' => $runs * $quantity]);
     
 endif;
-
